@@ -1428,9 +1428,6 @@ void FireRenderContext::readFrameBuffer(ReadFrameBufferRequestParams& params)
 {
 	RPR_THREAD_ONLY;
 
-	// resolve frame buffer
-	rpr_framebuffer frameBuffer = frameBufferAOV_Resolved(params.aov);
-
 	// debug output (if enabled)
 #ifdef DUMP_AOV_SOURCE
 	DebugDumpAOV(params.aov);
