@@ -373,6 +373,7 @@ public:
 
 	// Return the fr light
 	const FrLight& data() { return m_light; }
+	FrLight& GetFrLight() { return m_light; }
 
 	// clear
 	virtual void clear() override;
