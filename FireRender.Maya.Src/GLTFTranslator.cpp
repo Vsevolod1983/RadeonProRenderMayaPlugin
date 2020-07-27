@@ -274,7 +274,6 @@ void assignMesh(FireRenderMesh* pMesh, const MString& groupName, const MDagPath&
 void assignLight(FireRenderLight* pLight, const MString& groupName)
 {
 	rprGLTF_AssignLightToGroup(pLight->data().light.Handle(), groupName.asChar());
-	rprGLTF_AddExtraParameterFloat("aaaaaaaaa", 0.5f);
 	//Reset transform for shape since we already have transformation in parent groups
 	std::array<float, 16> arr;
 	FillArrayWithScaledMMatrixData(arr);
