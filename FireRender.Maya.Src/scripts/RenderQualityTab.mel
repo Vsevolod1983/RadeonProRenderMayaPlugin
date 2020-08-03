@@ -101,21 +101,21 @@ proc createViewportRenderQualityPart()
 			 -label "Render Quality"
 			 -attribute "RadeonProRenderGlobals.renderQualityViewport";
 		setParent ..;
-
-		frameLayout -label "Viewport Ray Depths" -cll true -cl 0 fireRenderViewportRayDepthFrame;
-		    attrControlGrp
-		        -label "Max Ray Depth"
-		        -attribute "RadeonProRenderGlobals.maxRayDepthViewport";
-
-		    attrControlGrp
-		        -label "Max Diffuse Ray Depth"
-		        -attribute "RadeonProRenderGlobals.maxDepthDiffuseViewport";
-
-		    attrControlGrp
-		        -label "Max Reflection Ray Depth"
-		        -attribute "RadeonProRenderGlobals.maxDepthGlossyViewport";
-		setParent ..;
 	}
+
+	frameLayout -label "Viewport Ray Depths" -cll true -cl 0 fireRenderViewportRayDepthFrame;
+	    attrControlGrp
+	        -label "Max Ray Depth"
+	        -attribute "RadeonProRenderGlobals.maxRayDepthViewport";
+
+	    attrControlGrp
+	        -label "Max Diffuse Ray Depth"
+	        -attribute "RadeonProRenderGlobals.maxDepthDiffuseViewport";
+
+	    attrControlGrp
+	        -label "Max Reflection Ray Depth"
+	        -attribute "RadeonProRenderGlobals.maxDepthGlossyViewport";
+	setParent ..;
 }
 
 global proc createQualityTab()
