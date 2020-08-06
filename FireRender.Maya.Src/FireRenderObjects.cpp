@@ -2561,5 +2561,26 @@ void FireRenderSkyHybrid::detachFromSceneInternal()
 	Scene().SetEnvironmentLight(nullptr);
 }
 
+FireRenderCustomEmitter::FireRenderCustomEmitter(FireRenderContext* context, const MDagPath& dagPath) :
+	FireRenderObject(context, dagPath.node())
+{
 
+}
 
+void FireRenderCustomEmitter::Freshen()
+{
+	if (!m_frwSpotLight)
+	{
+		m_frwSpotLight = Context().CreateSpotLight();
+		Scene().Attach(m_frwSpotLight);
+		
+		MFnDependencyNode node(Object());
+
+		MPlug plug = node.findPlug("RPRIsEmitter", false);
+
+		if (!plug.isNull())
+		{
+			m_frwSpotLight.AddGLTFExtraIntAttribute("isEmitter", plug.asInt());
+		}
+	}
+}
