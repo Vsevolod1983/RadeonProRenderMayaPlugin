@@ -125,7 +125,7 @@ global proc createAboutFrame(string $parent)
 
 global proc createFinalRenderPart()
 {
-    frameLayout -label "Render Setup" -cll false -cl 0 finalRenderSetup;
+    frameLayout -label "Render Devices" -cll false -cl 0 finalRenderSetup;
     createRenderResourcesFrame ("finalRenderSetup", 1);
     setParent ..;
 

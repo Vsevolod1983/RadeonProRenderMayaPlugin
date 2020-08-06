@@ -126,7 +126,7 @@ global proc createQualityTab()
 
 	frameLayout -label "Engine:" -cll true -cl 0 fireRenderTahoeEngineFrame;
 		attrControlGrp
-		    -label "Tahoe Engine:"
+		    -label "Render Engine:"
 		     -attribute "RadeonProRenderGlobals.tahoeVersion";
 	setParent ..;
 
