@@ -830,13 +830,10 @@ protected:
 	virtual bool CreateCurves(void);
 };
 
-class FireRenderCustomEmitter : public FireRenderObject
+class FireRenderCustomEmitter : public FireRenderLight
 {
 public:
 	FireRenderCustomEmitter(FireRenderContext* context, const MDagPath& dagPath);
 
 	void Freshen() override;
-
-private:
-	frw::SpotLight m_frwSpotLight;
 };

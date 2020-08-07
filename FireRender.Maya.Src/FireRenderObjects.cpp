@@ -2562,17 +2562,17 @@ void FireRenderSkyHybrid::detachFromSceneInternal()
 }
 
 FireRenderCustomEmitter::FireRenderCustomEmitter(FireRenderContext* context, const MDagPath& dagPath) :
-	FireRenderObject(context, dagPath.node())
+	FireRenderLight(context, dagPath)
 {
 
 }
 
 void FireRenderCustomEmitter::Freshen()
 {
-	if (!m_frwSpotLight)
+	if (!m_light.light)
 	{
-		m_frwSpotLight = Context().CreateSpotLight();
-		Scene().Attach(m_frwSpotLight);
+		m_light.light = Context().CreateSpotLight();
+		Scene().Attach(m_light.light);
 		
 		MFnDependencyNode node(Object());
 
@@ -2580,7 +2580,7 @@ void FireRenderCustomEmitter::Freshen()
 
 		if (!plug.isNull())
 		{
-			m_frwSpotLight.AddGLTFExtraIntAttribute("isEmitter", plug.asInt());
+			m_light.light.AddGLTFExtraIntAttribute("isEmitter", plug.asInt());
 		}
 	}
 }
