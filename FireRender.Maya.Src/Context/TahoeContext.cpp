@@ -52,7 +52,8 @@ rpr_int TahoeContext::GetPluginID(TahoePluginVersion version)
 #elif __linux__
 		pluginId = rprRegisterPlugin("libTahoe64.so");
 #else
-		pluginId = rprRegisterPlugin(libName + ".dll");
+		libName += ".dll";
+		pluginId = rprRegisterPlugin(libName.c_str());
 #endif
 
 		m_gLoadedPluginsIDsMap[version] = pluginId;
