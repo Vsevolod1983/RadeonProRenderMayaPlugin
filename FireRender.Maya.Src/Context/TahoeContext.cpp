@@ -430,3 +430,8 @@ bool TahoeContext::IsGLInteropEnabled() const
 {
 	return m_PluginVersion == TahoePluginVersion::RPR1;
 }
+
+bool TahoeContext::MetalContextAvailable() const
+{
+	return m_PluginVersion == TahoePluginVersion::RPR1;
+}
