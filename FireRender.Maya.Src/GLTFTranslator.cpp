@@ -273,7 +273,10 @@ void assignMesh(FireRenderMesh* pMesh, const MString& groupName, const MDagPath&
 
 void assignLight(FireRenderLight* pLight, const MString& groupName)
 {
+	// this function was not included in dylib for some reason
+#ifdef _WIN32
 	rprGLTF_AssignLightToGroup(pLight->data().light.Handle(), groupName.asChar());
+#endif
 	//Reset transform for shape since we already have transformation in parent groups
 	std::array<float, 16> arr;
 	FillArrayWithScaledMMatrixData(arr);
