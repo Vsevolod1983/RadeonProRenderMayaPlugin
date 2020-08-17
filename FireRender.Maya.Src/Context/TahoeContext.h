@@ -49,3 +49,5 @@ private:
 	typedef std::map< TahoePluginVersion, rpr_int> LoadedPluginMap;
 	static LoadedPluginMap m_gLoadedPluginsIDsMap;
 };
+
+typedef std::shared_ptr<TahoeContext> TahoeContextPtr;
