@@ -164,6 +164,7 @@ bool FireRenderIpr::start()
 		m_currentAOVToDisplay = globals.aovs.getRenderViewAOV().id;
 
 		m_contextPtr->enableAOV(m_currentAOVToDisplay);
+		m_contextPtr->enableAOV(RPR_AOV_COLOR);
 		m_contextPtr->enableAOV(RPR_AOV_VARIANCE);
 
 		if (globals.aovs.getAOV(RPR_AOV_OPACITY)->active)
