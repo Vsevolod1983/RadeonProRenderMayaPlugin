@@ -284,7 +284,7 @@ postinstall="/Users/Shared/RadeonProRender/Maya/scripts/postinstall"
 uninstall="/Users/Shared/RadeonProRender/Maya/scripts/uninstall"
 pkg="$dir/../Packages/<PKGNAME>"
 
-touch "/Users/Shared/RadeonProRender/Maya/00.txt"
+touch "/Users/Shared/RadeonProRender/00.txt"
 
 operation() {
 osascript <<'END'
@@ -298,7 +298,7 @@ error number -1
 END
 }
 
-touch "/Users/Shared/RadeonProRender/Maya/01.txt"
+touch "/Users/Shared/RadeonProRender/01.txt"
 
 moveinstalltotrash() {
 osascript <<'END'
@@ -309,22 +309,22 @@ end tell
 END
 }
 
-touch "/Users/Shared/RadeonProRender/Maya/a.txt"
+touch "/Users/Shared/RadeonProRender/a.txt"
 dist="/Users/Shared/RadeonProRender/Maya/"
 if [ -d "$dist" ]
 then
     operation
 fi
 
-touch "/Users/Shared/RadeonProRender/Maya/b.txt"
+touch "/Users/Shared/RadeonProRender/b.txt"
 if [ $? -eq 0 ]
 then
 
-    touch "/Users/Shared/RadeonProRender/Maya/c.txt"
+    touch "/Users/Shared/RadeonProRender/c.txt"
     /System/Library/CoreServices/Installer.app/Contents/MacOS/Installer "$pkg"
     if [ -d "$dist" ]
     then
-	touch "/Users/Shared/RadeonProRender/Maya/d.txt"
+        touch "/Users/Shared/RadeonProRender/d.txt"
         "$postinstall"
     fi
 else
