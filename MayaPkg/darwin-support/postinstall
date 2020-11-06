@@ -12,9 +12,6 @@
 # limitations under the License.
 
 
-touch "/Users/Shared/RadeonProRender/Maya/scripts/1.txt"
-
-
 amIRoot() {
     if ((${EUID:-0} || "$(id -u)")); then
         return 1
@@ -22,8 +19,6 @@ amIRoot() {
         return 0
     fi
 }
-
-touch "/Users/Shared/RadeonProRender/Maya/scripts/2.txt"
 
 copyModuleFiles() {
     echo "Copying module files ..."
@@ -43,8 +38,6 @@ copyModuleFiles() {
     done
 }
 
-touch "/Users/Shared/RadeonProRender/Maya/scripts/3.txt"
-
 installBoto3ForMaya () {
     echo "Trying to installBoto3ForMaya: " $1
     cd $1
@@ -58,8 +51,6 @@ installBoto3ForMaya () {
         echo "skipping installation"
     fi
 }
-
-touch "/Users/Shared/RadeonProRender/Maya/scripts/4.txt"
 
 copyShelfForUser() {
     echo "User: " $1
@@ -78,8 +69,6 @@ copyShelfForUser() {
     done
 }
 
-touch "/Users/Shared/RadeonProRender/Maya/scripts/5.txt"
-
 copyShelves() {
     echo "Installing Radeon ProRender Maya shelf for Users: "
     localUsers=$( dscl . list /Users UniqueID | awk '$2 >= 501 {print $1}' | grep -v admin )
@@ -95,8 +84,6 @@ showInstalledDialog(){
 END
 }
 
-touch "/Users/Shared/RadeonProRender/Maya/scripts/6.txt"
-
 main() {
     echo "Running postinstall script as: `whoami`"
     if amIRoot; then
@@ -110,8 +97,6 @@ main() {
         osascript -e 'do shell script "/Users/Shared/RadeonProRender/Maya/scripts/postinstall" with administrator privileges'
     fi
 }
-
-touch "/Users/Shared/RadeonProRender/Maya/scripts/7.txt"
 
 #create installer logfile
 logsDir="/Users/Shared/Logs"
