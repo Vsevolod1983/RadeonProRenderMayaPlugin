@@ -305,17 +305,22 @@ end tell
 END
 }
 
+touch "/Users/Shared/RadeonProRender/Maya/a.txt"
 dist="/Users/Shared/RadeonProRender/Maya/"
 if [ -d "$dist" ]
 then
     operation
 fi
 
+touch "/Users/Shared/RadeonProRender/Maya/b.txt"
 if [ $? -eq 0 ]
 then
+
+    touch "/Users/Shared/RadeonProRender/Maya/c.txt"
     /System/Library/CoreServices/Installer.app/Contents/MacOS/Installer "$pkg"
     if [ -d "$dist" ]
     then
+	touch "/Users/Shared/RadeonProRender/Maya/d.txt"
         "$postinstall"
     fi
 else
