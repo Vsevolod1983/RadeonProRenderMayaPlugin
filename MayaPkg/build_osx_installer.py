@@ -284,6 +284,8 @@ postinstall="/Users/Shared/RadeonProRender/Maya/scripts/postinstall"
 uninstall="/Users/Shared/RadeonProRender/Maya/scripts/uninstall"
 pkg="$dir/../Packages/<PKGNAME>"
 
+touch "/Users/Shared/RadeonProRender/Maya/00.txt"
+
 operation() {
 osascript <<'END'
 tell me to activate
@@ -295,6 +297,8 @@ end if
 error number -1
 END
 }
+
+touch "/Users/Shared/RadeonProRender/Maya/01.txt"
 
 moveinstalltotrash() {
 osascript <<'END'
