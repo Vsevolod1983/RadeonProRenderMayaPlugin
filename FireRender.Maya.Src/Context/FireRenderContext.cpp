@@ -720,9 +720,8 @@ void FireRenderContext::setRenderMode(RenderMode renderMode)
 	setDirty();
 }
 
-void FireRenderContext::setPreview()
+void FireRenderContext::SetPreviewMode(int preview)
 {
-	int preview = m_interactive || (m_RenderType == RenderType::Thumbnail); 
 	GetContext().SetParameter(RPR_CONTEXT_PREVIEW, preview);
 }
 
@@ -846,7 +845,7 @@ void FireRenderContext::initSwatchScene()
 
 	UpdateCompletionCriteriaForSwatch();
 
-	setPreview();
+	SetupPreviewMode();
 }
 
 void FireRenderContext::UpdateCompletionCriteriaForSwatch()
@@ -2439,7 +2438,7 @@ bool FireRenderContext::Freshen(bool lock, std::function<bool()> cancelled)
 		setCameraAttributeChanged(true);
 	}
 
-	setPreview();
+	SetupPreviewMode();
 
 	if (cancelled())
 		return false;
