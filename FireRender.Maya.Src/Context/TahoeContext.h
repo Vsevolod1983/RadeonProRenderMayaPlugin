@@ -44,6 +44,8 @@ public:
 	virtual void SetRenderUpdateCallback(RenderUpdateCallback callback, void* data) override;
 	virtual void AbortRender() override;
 
+	virtual void SetupPreviewMode() override;
+
 protected:
 	rpr_int CreateContextInternal(rpr_creation_flags createFlags, rpr_context* pContext) override;
 

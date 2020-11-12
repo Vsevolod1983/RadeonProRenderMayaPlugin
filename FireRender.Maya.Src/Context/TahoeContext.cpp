@@ -514,3 +514,19 @@ void TahoeContext::AbortRender()
 		GetScope().Context().AbortRender();
 	}
 }
+
+void TahoeContext::SetupPreviewMode()
+{
+	if (m_PluginVersion == TahoePluginVersion::RPR1)
+	{
+		RenderType renderType = GetRenderType();
+		int preview = 0;
+
+		if ((renderType == RenderType::ViewportRender) ||
+			(renderType == RenderType::IPR) ||
+			(renderType == RenderType::Thumbnail))
+		{
+			SetPreviewMode(1);
+		}
+	}
+}
