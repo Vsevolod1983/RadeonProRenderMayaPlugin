@@ -195,6 +195,8 @@ public:
 	int viewportRenderMode;
 	int renderMode;
 
+	MString textureCachePath;
+
 	// Global Illumination
 	bool giClampIrradiance;
 	float giClampIrradianceValue;
@@ -279,6 +281,7 @@ public:
 	bool motionBlur;
 	bool cameraMotionBlur;
 	bool viewportMotionBlur;
+	bool velocityAOVMotionBlur;
 	float motionBlurCameraExposure;
 
 	// Camera type.
