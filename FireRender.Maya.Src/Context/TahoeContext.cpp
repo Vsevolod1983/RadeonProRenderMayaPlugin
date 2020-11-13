@@ -16,7 +16,8 @@ limitations under the License.
 TahoeContext::LoadedPluginMap TahoeContext::m_gLoadedPluginsIDsMap;
 
 TahoeContext::TahoeContext() :
-	m_PluginVersion(TahoePluginVersion::RPR1)
+	m_PluginVersion(TahoePluginVersion::RPR1),
+	m_PreviewMode(true)
 {
 
 }
@@ -528,5 +529,35 @@ void TahoeContext::SetupPreviewMode()
 		{
 			SetPreviewMode(1);
 		}
+	}
+}
+
+void TahoeContext::OnPreRender()
+{
+	RenderType renderType = GetRenderType();
+
+	if ( (m_PluginVersion == TahoePluginVersion::RPR1) || 
+		((renderType != RenderType::ViewportRender) &&
+			(renderType != RenderType::IPR)))
+	{
+		return;
+	}
+
+	const int previewModeLevel = 2;
+	if (m_restartRender)
+	{
+		m_PreviewMode = true;
+		SetPreviewMode(previewModeLevel);
+	}
+
+	if (m_currentFrame == 2 && m_PreviewMode)
+	{
+		SetPreviewMode(0);
+		m_PreviewMode = false;
+		m_restartRender = true;
+	}
+	else if (m_currentFrame < 2 && m_PreviewMode)
+	{
+		SetPreviewMode(previewModeLevel);
 	}
 }

@@ -647,6 +647,8 @@ protected:
 
 	void TriggerProgressCallback(const ContextWorkProgressData& syncProgressData);
 
+	virtual void OnPreRender() {}
+
 private:
 	struct CallbacksAttachmentHelper
 	{

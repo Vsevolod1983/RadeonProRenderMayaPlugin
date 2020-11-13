@@ -55,11 +55,15 @@ protected:
 
 	bool IsGLInteropEnabled() const;
 
+	virtual void OnPreRender() override;
+
 private:
 	TahoePluginVersion m_PluginVersion;
 
 	typedef std::map< TahoePluginVersion, rpr_int> LoadedPluginMap;
 	static LoadedPluginMap m_gLoadedPluginsIDsMap;
+
+	bool m_PreviewMode;
 };
 
 typedef std::shared_ptr<TahoeContext> TahoeContextPtr;

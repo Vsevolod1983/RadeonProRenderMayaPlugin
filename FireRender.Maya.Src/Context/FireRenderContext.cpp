@@ -880,6 +880,8 @@ void FireRenderContext::render(bool lock)
 	if (!context)
 		return;
 
+	OnPreRender();
+
 	if (m_restartRender)
 	{
 		for (int i = 0; i != RPR_AOV_MAX; ++i) 
