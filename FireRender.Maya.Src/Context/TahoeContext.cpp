@@ -527,8 +527,10 @@ void TahoeContext::SetupPreviewMode()
 			(renderType == RenderType::IPR) ||
 			(renderType == RenderType::Thumbnail))
 		{
-			SetPreviewMode(1);
+			preview = 1;
 		}
+
+		SetPreviewMode(preview);
 	}
 }
 
