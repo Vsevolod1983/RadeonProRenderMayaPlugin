@@ -285,7 +285,7 @@ void FireRenderAOV::setRenderStamp(const MString& inRenderStamp)
 }
 
 // -----------------------------------------------------------------------------
-bool FireRenderAOV::writeToFile(const MString& filePath, bool colorOnly, unsigned int imageFormat, FileWrittenCallback fileWrittenCallback) const
+bool FireRenderAOV::writeToFile(FireRenderContext& context, const MString& filePath, bool colorOnly, unsigned int imageFormat, FileWrittenCallback fileWrittenCallback) const
 {
 	// Check that the AOV is active and in a valid state.
 	if (!active || !pixels || m_region.isZeroArea())
@@ -294,6 +294,12 @@ bool FireRenderAOV::writeToFile(const MString& filePath, bool colorOnly, unsigne
 	// Use the incoming path if only outputting the color AOV,
 	// otherwise, get a new path that includes a folder for the AOV.
 	MString path = colorOnly ? filePath : getOutputFilePath(filePath);
+
+	if (id == RPR_AOV_DEEP_COLOR)
+	{
+		rprFrameBufferSaveToFile(context.frameBufferAOV(id), path.asChar());
+		return true;
+	}
 
 	// Save the pixels to file.
 	FireRenderImageUtil::save(path, m_region.getWidth(), m_region.getHeight(), pixels.get(), imageFormat);

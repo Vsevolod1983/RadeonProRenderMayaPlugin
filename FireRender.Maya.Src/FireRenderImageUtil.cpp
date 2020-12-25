@@ -179,7 +179,7 @@ bool FireRenderImageUtil::saveMultichannelAOVs(MString filePath,
 	{
 		FireRenderAOV* aov = aovs.getAOV(i);
 
-		if (aov != nullptr && aov->active)
+		if (aov != nullptr && aov->active && aov->id != RPR_AOV_DEEP_COLOR)
 		{
 			int aov_component_count = 0;
 

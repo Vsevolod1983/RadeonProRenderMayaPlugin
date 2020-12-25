@@ -224,22 +224,33 @@ void FireRenderContext::initBuffersForAOV(frw::Context& context, int index, rpr_
 
 	if (aovEnabled[index]) 
     {
-		m.framebufferAOV[index] = frw::FrameBuffer(context, m_width, m_height, fmt);
+		bool createResolveFB = true;
+		if (index == RPR_AOV_DEEP_COLOR)
+		{
+			fmt.type = RPR_COMPONENT_TYPE_DEEP;
+
+			createResolveFB = false;
+		}
+		
+		m.framebufferAOV[index] = frw::FrameBuffer (context, m_width, m_height, fmt);
 		m.framebufferAOV[index].Clear();
 		context.SetAOV(m.framebufferAOV[index], index);
 
-		// Create an OpenGL interop resolved frame buffer if
-		// required, otherwise, create a standard frame buffer.
-		if (m_glInteropActive && glTexture)
-        { 
-			m.framebufferAOV_resolved[index] = frw::FrameBuffer(context, glTexture);
-        }
-        else
-        {
-            m.framebufferAOV_resolved[index] = frw::FrameBuffer(context, m_width, m_height, fmt);
-        }
+		if (createResolveFB)
+		{
+			// Create an OpenGL interop resolved frame buffer if
+			// required, otherwise, create a standard frame buffer.
+			if (m_glInteropActive && glTexture)
+			{
+				m.framebufferAOV_resolved[index] = frw::FrameBuffer(context, glTexture);
+			}
+			else
+			{
+				m.framebufferAOV_resolved[index] = frw::FrameBuffer(context, m_width, m_height, fmt);
+			}
 
-		m.framebufferAOV_resolved[index].Clear();
+			m.framebufferAOV_resolved[index].Clear();
+		}
 	}
 	else
 	{

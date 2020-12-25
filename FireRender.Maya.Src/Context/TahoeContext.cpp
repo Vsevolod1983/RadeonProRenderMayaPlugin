@@ -219,6 +219,14 @@ void TahoeContext::setupContextPostSceneCreation(const FireRenderGlobalsData& fi
 
 		frstatus = rprContextSetParameterByKey1u(frcontext, RPR_CONTEXT_ADAPTIVE_SAMPLING_MIN_SPP, fireRenderGlobalsData.completionCriteriaFinalRender.completionCriteriaMinIterations);
 		checkStatus(frstatus);
+
+		// if Deep Exr enabled
+		if (true)
+		{
+			frstatus = rprContextSetParameterByKey1f(frcontext, RPR_CONTEXT_DEEP_SUBPIXEL_MERGE_Z_THRESHOLD, 0.1f);
+			frstatus = rprContextSetParameterByKey1f(frcontext, RPR_CONTEXT_DEEP_GPU_ALLOCATION_LEVEL, 4);
+			frstatus = rprContextSetParameterByKey1f(frcontext, RPR_CONTEXT_DEEP_COLOR_ENABLED, 1);
+		}
 	}
 	else if (isInteractive())
 	{

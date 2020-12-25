@@ -210,7 +210,7 @@ MStatus FireRenderCmd::renderFrame(const MArgDatabase& argData)
 		MString filePath = getOutputFilePath(settings, frame, cameraName, true);
 
 		// Write output files.
-		aovs->writeToFile(filePath, settings.imageFormat, [](const MString& path)
+		aovs->writeToFile(*s_production->GetContext(), filePath, settings.imageFormat, [](const MString& path)
 		{
 			MString cmd;
 
@@ -492,7 +492,7 @@ MStatus FireRenderCmd::renderBatch(const MArgDatabase& args)
 				aovs.readFrameBuffers(context, false);
 
 				// Save the frame to file.
-				aovs.writeToFile(filePath, settings.imageFormat);
+				aovs.writeToFile(context, filePath, settings.imageFormat);
 
 				// Execute the post frame command if there is one.
 				MGlobal::executeCommand(settings.postRenderMel);

@@ -283,6 +283,8 @@ bool FireRenderProduction::start()
 		}
 
 		m_contextPtr->enableAOV(RPR_AOV_OPACITY);
+		m_contextPtr->enableAOV(RPR_AOV_DEEP_COLOR);
+
 		if (m_globals.adaptiveThreshold > 0.0f)
 		{
 			m_contextPtr->enableAOV(RPR_AOV_VARIANCE);
@@ -1055,7 +1057,7 @@ void FireRenderProduction::RenderFullFrame()
 			MString filePath = GlobalRenderUtilsDataHolder::GetGlobalRenderUtilsDataHolder()->FolderPath().c_str();
 			filePath += m_contextPtr->m_currentIteration;
 			filePath += ".jpg";
-			m_renderViewAOV->writeToFile(filePath, colorOnly, imageFormat);
+			m_renderViewAOV->writeToFile(*m_contextPtr, filePath, colorOnly, imageFormat);
 
 			std::ofstream timeLoggingFile;
 			timeLoggingFile.open(GlobalRenderUtilsDataHolder::GetGlobalRenderUtilsDataHolder()->FolderPath() + "time_log.txt", std::ofstream::out | std::ofstream::app);

@@ -87,6 +87,8 @@ public:
 
 	/** Waits for production render to complete on the main thread until complete */
 	void waitForIt();
+
+	FireRenderContextPtr GetContext() { return m_contextPtr; }
 private:
 
 	// Life Cycle
