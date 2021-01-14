@@ -236,6 +236,12 @@ void FireRenderAOV::readFrameBuffer(FireRenderContext& context, bool flip, bool 
 	if (!active || !pixels || m_region.isZeroArea() || !context.IsAOVSupported(id))
 		return;
 
+	// It special aov, skip it here
+	if (id == RPR_AOV_DEEP_COLOR)
+	{
+		return;
+	}
+
 	bool opacityMerge = context.camera().GetAlphaMask() && context.isAOVEnabled(RPR_AOV_OPACITY);
 
 	// setup params

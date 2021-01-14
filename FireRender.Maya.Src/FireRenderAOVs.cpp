@@ -136,6 +136,9 @@ FireRenderAOVs::FireRenderAOVs() :
 	AddAOV(RPR_AOV_CRYPTOMATTE_OBJ2, "aovCryptoMaterialObj2", "Crypto Material Obj2", "CryptoObject02",
 		{ { "R", "G", "B", "A" },{ TypeDesc::FLOAT, TypeDesc::VEC4, TypeDesc::COLOR } });
 
+	AddAOV(RPR_AOV_DEEP_COLOR, "aovDeepColor", "Deep Color", "deep_color",
+		{ { "R", "G", "B", "A" },{ TypeDesc::FLOAT, TypeDesc::VEC4, TypeDesc::COLOR } });
+
 	InitEXRCompressionMap();
 }
 

@@ -224,7 +224,7 @@ bool aovExists(int index)
 	if ((index >= RPR_AOV_CRYPTOMATTE_MAT0) && (index <= RPR_AOV_CRYPTOMATTE_MAT2))
 		return true;
 
-	if ((index >= RPR_AOV_CRYPTOMATTE_OBJ0) && (index <= RPR_AOV_CRYPTOMATTE_OBJ2))
+	if ((index >= RPR_AOV_CRYPTOMATTE_OBJ0) && (index <= RPR_AOV_DEEP_COLOR))
 		return true;
 
 	return false;
@@ -1287,7 +1287,7 @@ rpr_framebuffer FireRenderContext::frameBufferAOV_Resolved(int aov) {
 		return nullptr;
 	}
 
-	if (needResolve())
+	if (needResolve() && aov != RPR_AOV_DEEP_COLOR)
 	{
 		//resolve tone mapping
 		m.framebufferAOV[aov].Resolve(m.framebufferAOV_resolved[aov], aov != RPR_AOV_COLOR);
