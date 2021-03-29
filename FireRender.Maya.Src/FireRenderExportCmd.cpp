@@ -92,11 +92,15 @@ bool SaveExportConfig(const std::wstring& filePath, TahoeContext& ctx, const std
 	if (!json)
 		return false;
 
+	std::string pluginDll = TahoeContext::IsGivenContextRPR2(&ctx) ? "Northstar64.dll" : "Tahoe64.dll";
+
 	const std::locale utf8_locale
 		= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
 	json.imbue(utf8_locale);
 
 	json << "{" << std::endl;
+
+	json << "\"plugin\" : \"" << pluginDll.c_str() << "\",\n";
 
 	json << "\"output\" : " << "\"" << fileName.c_str() << ".png\",\n";
 
