@@ -76,6 +76,22 @@ MSyntax FireRenderExportCmd::newSyntax()
 	return syntax;
 }
 
+std::string GetPluginLibrary(const TahoeContext& ctx)
+{
+	std::string pluginExtension;
+	std::string pluginPrefix;
+
+	std::string pluginDll = TahoeContext::IsGivenContextRPR2(&ctx) ? "Northstar64" : "Tahoe64";
+
+#ifdef WIN32
+	pluginDll += ".dll";
+#else
+	pluginDll = "lib" + pluginDll + ".dylib";
+#endif
+
+	return pluginDll;
+}
+
 bool SaveExportConfig(const std::wstring& filePath, TahoeContext& ctx, const std::wstring& fileName)
 {
 	std::wstring configName = std::regex_replace(filePath, std::wregex(L"rpr$"), L"json");
@@ -92,10 +108,9 @@ bool SaveExportConfig(const std::wstring& filePath, TahoeContext& ctx, const std
 	if (!json)
 		return false;
 
-	std::string pluginDll = TahoeContext::IsGivenContextRPR2(&ctx) ? "Northstar64.dll" : "Tahoe64.dll";
+	std::string pluginDll = GetPluginLibrary(ctx);
 
-	const std::locale utf8_locale
-		= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
+	const std::locale utf8_locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
 	json.imbue(utf8_locale);
 
 	json << "{" << std::endl;
