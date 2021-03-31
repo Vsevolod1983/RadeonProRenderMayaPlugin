@@ -1605,6 +1605,8 @@ void FireRenderMeshCommon::ProcessMotionBlur(MFnDagNode& meshFn)
 	bool objectMotionBlur = true;
 	MPlug objectMBPlug = meshFn.findPlug("motionBlur");
 
+	MString name = meshFn.name();
+
 	if (!objectMBPlug.isNull())
 	{
 		objectMotionBlur = objectMBPlug.asBool();

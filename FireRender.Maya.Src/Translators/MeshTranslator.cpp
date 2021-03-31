@@ -25,6 +25,7 @@ limitations under the License.
 #include <maya/MPointArray.h>
 #include <maya/MItMeshPolygon.h>
 #include <maya/MSelectionList.h>
+#include <maya/MAnimControl.h>
 
 #include <unordered_map>
 
@@ -42,7 +43,57 @@ FireMaya::MeshTranslator::MeshPolygonData::MeshPolygonData()
 	, pNormals(nullptr)
 	, countNormals(0)
 	, triangleVertexIndicesCount(0)
+	, deformationFrameCount(0)
 {
+}
+
+void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh)
+{
+	// temp code
+	deformationFrameCount = 2;
+
+	MStatus status;
+
+	if (deformationFrameCount < 2)
+	{
+		return;
+	}
+
+	MTime initialTime = MAnimControl::currentTime();
+	MTime currentTime = initialTime;
+
+	if (initialTime == MAnimControl::maxTime())
+	{
+		return;
+	}
+
+	size_t floatsVertexOneFrame = 3 * countVertices;
+	size_t floatsNormalOneFrame = 3 * countNormals;
+
+	arrVertices.resize(floatsVertexOneFrame * deformationFrameCount);
+	arrNormals.resize(floatsNormalOneFrame * deformationFrameCount);
+
+	unsigned int currentTimeIndex = 0;
+
+	for (unsigned int currentTimeIndex = 0; currentTimeIndex < deformationFrameCount; ++currentTimeIndex)
+	{
+		// positioning on next point of time (starting from currentTime)
+		currentTime += (float)currentTimeIndex / (deformationFrameCount - 1);
+		MGlobal::viewFrame(currentTime);
+
+		//fnMesh.setObject
+
+		const float* pData = fnMesh.getRawPoints(&status);
+		assert(MStatus::kSuccess == status);
+		std::copy(pData, pData + floatsVertexOneFrame, arrVertices.data() + floatsVertexOneFrame * currentTimeIndex);
+
+		pData = fnMesh.getRawNormals(&status);
+		assert(MStatus::kSuccess == status);
+		std::copy(pData, pData + floatsNormalOneFrame, arrNormals.data() + floatsNormalOneFrame * currentTimeIndex);
+	}
+
+	MGlobal::viewFrame(initialTime);
+
 }
 
 bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh)
@@ -62,14 +113,17 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 		return false;
 	}
 
-	countVertices = fnMesh.numVertices(&mstatus);
-	assert(MStatus::kSuccess == mstatus);
-
 	// pointer to array of normal coordinates in Maya
 	pNormals = fnMesh.getRawNormals(&mstatus);
 	assert(MStatus::kSuccess == mstatus);
+
+	countVertices = fnMesh.numVertices(&mstatus);
+	assert(MStatus::kSuccess == mstatus);
+
 	countNormals = fnMesh.numNormals(&mstatus);
 	assert(MStatus::kSuccess == mstatus);
+
+	ProcessDeformationFrameCount(fnMesh);
 
 	// get triangle count (max possible count; this number is used for reserve only)
 	MIntArray triangleCounts; // basically number of triangles in polygons; size of array equal to number of polygons in mesh
