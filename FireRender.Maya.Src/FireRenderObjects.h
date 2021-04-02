@@ -302,6 +302,8 @@ protected:
 	void ProcessMotionBlur(MFnDagNode& meshFn);
 	virtual bool IsMeshVisible(const MDagPath& meshPath, const FireRenderContext* context) const = 0;
 
+	bool IsMotionBlurEnabled(MFnDagNode& meshFn);
+
 protected:
 
 	struct

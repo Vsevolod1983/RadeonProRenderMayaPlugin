@@ -91,10 +91,14 @@ void FireMaya::SingleShaderMeshTranslator::TranslateMesh(
 	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 #endif
 
-	rpr_mesh_info mesh_properties[16];
-	mesh_properties[0] = (rpr_mesh_info) RPR_MESH_MOTION_DIMENSION;
-	mesh_properties[1] = (rpr_mesh_info) meshData.deformationFrameCount;
-	mesh_properties[2] = (rpr_mesh_info) 0;
+	rpr_mesh_info mesh_properties[16] = { 0 };
+
+	if (meshData.deformationMBFrameCount > 0)
+	{
+		mesh_properties[0] = (rpr_mesh_info)RPR_MESH_MOTION_DIMENSION;
+		mesh_properties[1] = (rpr_mesh_info)meshData.deformationMBFrameCount;
+		mesh_properties[2] = (rpr_mesh_info)0;
+	}
 
 
 	elements[0] = context.CreateMeshEx(

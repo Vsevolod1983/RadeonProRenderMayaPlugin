@@ -92,3 +92,11 @@ global proc int getMlDenoiserSupportedCPU()
 	global int $mlDenoiserSupportedCPU;
 	return $mlDenoiserSupportedCPU;
 }
+
+global proc string hasGivenMeshDeformerOrRigAttached(string $mesh)
+{
+  	string $historyNodes[] = `listHistory $mesh`;
+        string $result[] = `ls -type geometryFilter $historyNodes`;
+	
+	return string(size($result));
+}

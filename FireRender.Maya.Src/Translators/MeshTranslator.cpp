@@ -43,18 +43,26 @@ FireMaya::MeshTranslator::MeshPolygonData::MeshPolygonData()
 	, pNormals(nullptr)
 	, countNormals(0)
 	, triangleVertexIndicesCount(0)
-	, deformationFrameCount(0)
+	, deformationMBFrameCount(0)
 {
 }
 
 void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh)
 {
-	// temp code
-	deformationFrameCount = 2;
+	if (deformationMBFrameCount < 2)
+	{
+		return;
+	}
 
+	// Check if mesh has deformers or rigs inside construction history
+	MString name = fnMesh.absoluteName();
+	MString command;
+	command.format("source common.mel; hasGivenMeshDeformerOrRigAttached(\"^1s\");", name);
+	
 	MStatus status;
+	MString result = MGlobal::executeCommandStringResult(command, false, false, &status);
 
-	if (deformationFrameCount < 2)
+	if (result.asInt() == 0)
 	{
 		return;
 	}
@@ -70,15 +78,15 @@ void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 	size_t floatsVertexOneFrame = 3 * countVertices;
 	size_t floatsNormalOneFrame = 3 * countNormals;
 
-	arrVertices.resize(floatsVertexOneFrame * deformationFrameCount);
-	arrNormals.resize(floatsNormalOneFrame * deformationFrameCount);
+	arrVertices.resize(floatsVertexOneFrame * deformationMBFrameCount);
+	arrNormals.resize(floatsNormalOneFrame * deformationMBFrameCount);
 
 	unsigned int currentTimeIndex = 0;
 
-	for (unsigned int currentTimeIndex = 0; currentTimeIndex < deformationFrameCount; ++currentTimeIndex)
+	for (unsigned int currentTimeIndex = 0; currentTimeIndex < deformationMBFrameCount; ++currentTimeIndex)
 	{
 		// positioning on next point of time (starting from currentTime)
-		currentTime += (float)currentTimeIndex / (deformationFrameCount - 1);
+		currentTime += (float)currentTimeIndex / (deformationMBFrameCount - 1);
 		MGlobal::viewFrame(currentTime);
 
 		//fnMesh.setObject
@@ -96,7 +104,7 @@ void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 
 }
 
-bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh)
+bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount)
 {
 	GetUVCoords(fnMesh, uvSetNames, uvCoords, puvCoords, sizeCoords);
 	unsigned int uvSetCount = uvSetNames.length();
@@ -123,6 +131,7 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 	countNormals = fnMesh.numNormals(&mstatus);
 	assert(MStatus::kSuccess == mstatus);
 
+	deformationMBFrameCount = deformationFrameCount;
 	ProcessDeformationFrameCount(fnMesh);
 
 	// get triangle count (max possible count; this number is used for reserve only)
@@ -134,7 +143,7 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 	return true;
 }
 
-std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Context& context, const MObject& originalObject)
+std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Context& context, const MObject& originalObject, unsigned int deformationFrameCount)
 {
 	MAIN_THREAD_ONLY;
 
@@ -198,7 +207,7 @@ std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Conte
 
 	// get common data from mesh
 	MeshPolygonData meshPolygonData;
-	bool successfullyInitialized = meshPolygonData.Initialize(fnMesh);
+	bool successfullyInitialized = meshPolygonData.Initialize(fnMesh, deformationFrameCount);
 	if (!successfullyInitialized)
 	{
 		std::string nodeName = fnMesh.name().asChar();

@@ -40,12 +40,12 @@ namespace FireMaya
 			size_t countNormals;
 			size_t triangleVertexIndicesCount;
 
-			unsigned int deformationFrameCount;
+			unsigned int deformationMBFrameCount;
 
 			MeshPolygonData();
 
 			// Initializes mesh and returns error status
-			bool Initialize(const MFnMesh& fnMesh);
+			bool Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount);
 			void ProcessDeformationFrameCount(const MFnMesh& fnMesh);
 
 			size_t GetTotalVertexCount() { return std::max(arrVertices.size() / 3, countVertices); }
@@ -99,7 +99,7 @@ namespace FireMaya
 			std::vector<MColor> vertexColors;
 		};
 
-		static std::vector<frw::Shape> TranslateMesh(const frw::Context& context, const MObject& originalObject);
+		static std::vector<frw::Shape> TranslateMesh(const frw::Context& context, const MObject& originalObject, unsigned int deformationFrameCount = 0);
 
 	private:
 
