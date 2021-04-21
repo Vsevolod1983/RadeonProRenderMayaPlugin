@@ -1440,7 +1440,10 @@ void FireRenderMesh::SetupObjectId(MObject parentTransformObject)
 
 	for (FrElement element : m.elements)
 	{
-		element.shape.SetObjectId(objectId);
+		if (element.shape.Handle() != nullptr)
+		{
+			element.shape.SetObjectId(objectId);
+		}
 	}
 }
 

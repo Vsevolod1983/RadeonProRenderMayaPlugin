@@ -47,11 +47,11 @@ FireMaya::MeshTranslator::MeshPolygonData::MeshPolygonData()
 {
 }
 
-void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh)
+bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh)
 {
 	if (deformationMBFrameCount < 2)
 	{
-		return;
+		return false;
 	}
 
 	// Check if mesh has deformers or rigs inside construction history
@@ -64,7 +64,7 @@ void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 
 	if (result.asInt() == 0)
 	{
-		return;
+		return false;
 	}
 
 	MTime initialTime = MAnimControl::currentTime();
@@ -72,7 +72,7 @@ void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 
 	if (initialTime == MAnimControl::maxTime())
 	{
-		return;
+		return false;
 	}
 
 	size_t floatsVertexOneFrame = 3 * countVertices;
@@ -102,6 +102,7 @@ void FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 
 	MGlobal::viewFrame(initialTime);
 
+	return true;
 }
 
 bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount)
@@ -121,18 +122,25 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 		return false;
 	}
 
+	countVertices = fnMesh.numVertices(&mstatus);
+	assert(MStatus::kSuccess == mstatus);
+	if (countVertices == 0)
+	{
+		return false;
+	}
+
 	// pointer to array of normal coordinates in Maya
 	pNormals = fnMesh.getRawNormals(&mstatus);
-	assert(MStatus::kSuccess == mstatus);
-
-	countVertices = fnMesh.numVertices(&mstatus);
 	assert(MStatus::kSuccess == mstatus);
 
 	countNormals = fnMesh.numNormals(&mstatus);
 	assert(MStatus::kSuccess == mstatus);
 
 	deformationMBFrameCount = deformationFrameCount;
-	ProcessDeformationFrameCount(fnMesh);
+	if (!ProcessDeformationFrameCount(fnMesh))
+	{
+		deformationMBFrameCount = 0;
+	}
 
 	// get triangle count (max possible count; this number is used for reserve only)
 	MIntArray triangleCounts; // basically number of triangles in polygons; size of array equal to number of polygons in mesh

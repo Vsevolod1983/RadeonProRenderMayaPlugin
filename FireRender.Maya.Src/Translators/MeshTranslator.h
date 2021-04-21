@@ -46,7 +46,7 @@ namespace FireMaya
 
 			// Initializes mesh and returns error status
 			bool Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount);
-			void ProcessDeformationFrameCount(const MFnMesh& fnMesh);
+			bool ProcessDeformationFrameCount(const MFnMesh& fnMesh);
 
 			size_t GetTotalVertexCount() { return std::max(arrVertices.size() / 3, countVertices); }
 			size_t GetTotalNormalCount() { return std::max(arrNormals.size() / 3, countNormals); }
