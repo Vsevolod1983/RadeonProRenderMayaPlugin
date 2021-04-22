@@ -47,15 +47,16 @@ FireMaya::MeshTranslator::MeshPolygonData::MeshPolygonData()
 {
 }
 
-bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh)
+bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh, MString fullDagPath)
 {
-	if (deformationMBFrameCount < 2)
+	if (deformationMBFrameCount < 2 || fullDagPath.length() == 0)
 	{
 		return false;
 	}
 
 	// Check if mesh has deformers or rigs inside construction history
-	MString name = fnMesh.absoluteName();
+
+	MString name = fullDagPath;
 	MString command;
 	command.format("source common.mel; hasGivenMeshDeformerOrRigAttached(\"^1s\");", name);
 	
@@ -105,7 +106,7 @@ bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 	return true;
 }
 
-bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount)
+bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount, MString fullDagPath)
 {
 	GetUVCoords(fnMesh, uvSetNames, uvCoords, puvCoords, sizeCoords);
 	unsigned int uvSetCount = uvSetNames.length();
@@ -137,7 +138,7 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 	assert(MStatus::kSuccess == mstatus);
 
 	deformationMBFrameCount = deformationFrameCount;
-	if (!ProcessDeformationFrameCount(fnMesh))
+	if (!ProcessDeformationFrameCount(fnMesh, fullDagPath))
 	{
 		deformationMBFrameCount = 0;
 	}
@@ -151,7 +152,7 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 	return true;
 }
 
-std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Context& context, const MObject& originalObject, unsigned int deformationFrameCount)
+std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Context& context, const MObject& originalObject, unsigned int deformationFrameCount, MString fullDagPath)
 {
 	MAIN_THREAD_ONLY;
 
@@ -215,7 +216,7 @@ std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Conte
 
 	// get common data from mesh
 	MeshPolygonData meshPolygonData;
-	bool successfullyInitialized = meshPolygonData.Initialize(fnMesh, deformationFrameCount);
+	bool successfullyInitialized = meshPolygonData.Initialize(fnMesh, deformationFrameCount, fullDagPath);
 	if (!successfullyInitialized)
 	{
 		std::string nodeName = fnMesh.name().asChar();

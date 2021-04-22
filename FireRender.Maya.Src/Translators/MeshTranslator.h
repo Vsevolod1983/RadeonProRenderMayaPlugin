@@ -45,8 +45,8 @@ namespace FireMaya
 			MeshPolygonData();
 
 			// Initializes mesh and returns error status
-			bool Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount);
-			bool ProcessDeformationFrameCount(const MFnMesh& fnMesh);
+			bool Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount, MString fullDagPath);
+			bool ProcessDeformationFrameCount(const MFnMesh& fnMesh, MString fullDagPath);
 
 			size_t GetTotalVertexCount() { return std::max(arrVertices.size() / 3, countVertices); }
 			size_t GetTotalNormalCount() { return std::max(arrNormals.size() / 3, countNormals); }
@@ -99,7 +99,7 @@ namespace FireMaya
 			std::vector<MColor> vertexColors;
 		};
 
-		static std::vector<frw::Shape> TranslateMesh(const frw::Context& context, const MObject& originalObject, unsigned int deformationFrameCount = 0);
+		static std::vector<frw::Shape> TranslateMesh(const frw::Context& context, const MObject& originalObject, unsigned int deformationFrameCount = 0, MString fullDagPath="");
 
 	private:
 

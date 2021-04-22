@@ -100,7 +100,6 @@ void FireMaya::SingleShaderMeshTranslator::TranslateMesh(
 		mesh_properties[2] = (rpr_mesh_info)0;
 	}
 
-
 	elements[0] = context.CreateMeshEx(
 		meshData.GetVertices(), meshData.GetTotalVertexCount(), sizeof(Float3),
 		meshData.GetNormals(), meshData.GetTotalNormalCount(), sizeof(Float3),
