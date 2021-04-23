@@ -174,7 +174,7 @@ global proc createFireRenderMotionBlurFrame(string $parent)
 
 	attrControlGrp
 		 -label "Motion Samples"
-		 -attribute "RadeonProRenderGlobals.motionSamplesCount" motionSamplesCount;
+		 -attribute "RadeonProRenderGlobals.motionSamples" motionSamples;
 
 	frameLayout -label "Final Render" -cll false -cl 0 fireRenderFinalMotionBlurFrame;
 		attrControlGrp

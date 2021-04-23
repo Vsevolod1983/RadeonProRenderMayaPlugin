@@ -1514,7 +1514,7 @@ void FireRenderMesh::GetShapes(std::vector<frw::Shape>& outShapes)
 	if (mainMesh == nullptr)
 	{
 		bool deformationMotionBlurEnabled = IsMotionBlurEnabled(MFnDagNode(dagPath.node())) && TahoeContext::IsGivenContextRPR2(context) && !context->isInteractive();
-		unsigned int motionSamplesCount = deformationMotionBlurEnabled ? 2 /* temp code 2*/ : 0;
+		unsigned int motionSamplesCount = deformationMotionBlurEnabled ? context->motionSamples() : 0;
 		outShapes = FireMaya::MeshTranslator::TranslateMesh(context->GetContext(), Object(), motionSamplesCount, dagPath.fullPathName());
 		m.isMainInstance = true;
 		context->AddMainMesh(this);
