@@ -47,7 +47,7 @@ FireMaya::MeshTranslator::MeshPolygonData::MeshPolygonData()
 {
 }
 
-bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh, MString fullDagPath)
+bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(MFnMesh& fnMesh, MString fullDagPath)
 {
 	if (motionSamplesCount < 2 || fullDagPath.length() == 0)
 	{
@@ -90,7 +90,14 @@ bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 		currentTime += (float)currentTimeIndex / (motionSamplesCount - 1);
 		MGlobal::viewFrame(currentTime);
 
-		//fnMesh.setObject
+		// We need to update fnMesh function set in order to apply time change
+		{
+			MSelectionList sl;
+			sl.add(fullDagPath);
+			MDagPath dagPath;
+			sl.getDagPath(0, dagPath);
+			fnMesh.setObject(dagPath.node());
+		}
 
 		const float* pData = fnMesh.getRawPoints(&status);
 		assert(MStatus::kSuccess == status);
@@ -106,7 +113,7 @@ bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 	return true;
 }
 
-bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount, MString fullDagPath)
+bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(MFnMesh& fnMesh, unsigned int deformationFrameCount, MString fullDagPath)
 {
 	GetUVCoords(fnMesh, uvSetNames, uvCoords, puvCoords, sizeCoords);
 	unsigned int uvSetCount = uvSetNames.length();

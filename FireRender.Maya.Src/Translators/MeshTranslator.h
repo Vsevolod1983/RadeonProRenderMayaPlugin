@@ -45,8 +45,8 @@ namespace FireMaya
 			MeshPolygonData();
 
 			// Initializes mesh and returns error status
-			bool Initialize(const MFnMesh& fnMesh, unsigned int deformationFrameCount, MString fullDagPath);
-			bool ProcessDeformationFrameCount(const MFnMesh& fnMesh, MString fullDagPath);
+			bool Initialize(MFnMesh& fnMesh, unsigned int deformationFrameCount, MString fullDagPath);
+			bool ProcessDeformationFrameCount(MFnMesh& fnMesh, MString fullDagPath);
 
 			size_t GetTotalVertexCount() { return std::max(arrVertices.size() / 3, countVertices); }
 			size_t GetTotalNormalCount() { return std::max(arrNormals.size() / 3, countNormals); }
@@ -54,7 +54,7 @@ namespace FireMaya
 			const float* GetVertices() const { return arrVertices.size() > 0 ? arrVertices.data() : pVertices; }
 			const float* GetNormals() const { return arrNormals.size() > 0 ? arrNormals.data() : pNormals; }
 
-		private:
+		//private:
 			const float* pVertices;
 			const float* pNormals;
 		};
