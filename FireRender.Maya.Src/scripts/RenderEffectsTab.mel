@@ -173,8 +173,8 @@ global proc createFireRenderMotionBlurFrame(string $parent)
 		 -attribute "RadeonProRenderGlobals.motionBlurCameraExposure" cameraExposure;
 
 	attrControlGrp
-		 -label "Deformation Frame Count"
-		 -attribute "RadeonProRenderGlobals.deformationMBFrameCount" deformationMBFrameCount;
+		 -label "Motion Samples"
+		 -attribute "RadeonProRenderGlobals.motionSamplesCount" motionSamplesCount;
 
 	frameLayout -label "Final Render" -cll false -cl 0 fireRenderFinalMotionBlurFrame;
 		attrControlGrp

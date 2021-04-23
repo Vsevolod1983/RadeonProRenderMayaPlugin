@@ -40,7 +40,7 @@ namespace FireMaya
 			size_t countNormals;
 			size_t triangleVertexIndicesCount;
 
-			unsigned int deformationMBFrameCount;
+			unsigned int motionSamplesCount;
 
 			MeshPolygonData();
 

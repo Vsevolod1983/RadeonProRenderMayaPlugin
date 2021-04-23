@@ -93,7 +93,7 @@ namespace
 
 		MObject motionBlur;
 		MObject cameraMotionBlur;
-		MObject deformationMBFrameCount;
+		MObject motionSamplesCount;
 		MObject motionBlurCameraExposure;
 		MObject velocityAOVMotionBlur;
 		MObject cameraType;
@@ -430,7 +430,7 @@ MStatus FireRenderGlobals::initialize()
 	Attribute::motionBlur = nAttr.create("motionBlur", "mblr", MFnNumericData::kBoolean, 0, &status);
 	MAKE_INPUT(nAttr);
 
-	Attribute::deformationMBFrameCount = nAttr.create("deformationMBFrameCount", "dmbf", MFnNumericData::kInt, 2, &status);
+	Attribute::motionSamplesCount = nAttr.create("motionSamplesCount", "msc", MFnNumericData::kInt, 2, &status);
 	MAKE_INPUT(nAttr);
 	nAttr.setMin(2);
 	nAttr.setSoftMax(4);
@@ -510,7 +510,7 @@ MStatus FireRenderGlobals::initialize()
 	CHECK_MSTATUS(addAttribute(Attribute::sky));
 	CHECK_MSTATUS(addAttribute(Attribute::commandPort));
 	CHECK_MSTATUS(addAttribute(Attribute::motionBlur));
-	CHECK_MSTATUS(addAttribute(Attribute::deformationMBFrameCount));
+	CHECK_MSTATUS(addAttribute(Attribute::motionSamplesCount));
 	CHECK_MSTATUS(addAttribute(Attribute::cameraMotionBlur));
 	CHECK_MSTATUS(addAttribute(Attribute::motionBlurCameraExposure));
 	CHECK_MSTATUS(addAttribute(Attribute::velocityAOVMotionBlur));

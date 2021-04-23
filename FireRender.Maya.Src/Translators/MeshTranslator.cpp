@@ -43,13 +43,13 @@ FireMaya::MeshTranslator::MeshPolygonData::MeshPolygonData()
 	, pNormals(nullptr)
 	, countNormals(0)
 	, triangleVertexIndicesCount(0)
-	, deformationMBFrameCount(0)
+	, motionSamplesCount(0)
 {
 }
 
 bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(const MFnMesh& fnMesh, MString fullDagPath)
 {
-	if (deformationMBFrameCount < 2 || fullDagPath.length() == 0)
+	if (motionSamplesCount < 2 || fullDagPath.length() == 0)
 	{
 		return false;
 	}
@@ -79,15 +79,15 @@ bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(con
 	size_t floatsVertexOneFrame = 3 * countVertices;
 	size_t floatsNormalOneFrame = 3 * countNormals;
 
-	arrVertices.resize(floatsVertexOneFrame * deformationMBFrameCount);
-	arrNormals.resize(floatsNormalOneFrame * deformationMBFrameCount);
+	arrVertices.resize(floatsVertexOneFrame * motionSamplesCount);
+	arrNormals.resize(floatsNormalOneFrame * motionSamplesCount);
 
 	unsigned int currentTimeIndex = 0;
 
-	for (unsigned int currentTimeIndex = 0; currentTimeIndex < deformationMBFrameCount; ++currentTimeIndex)
+	for (unsigned int currentTimeIndex = 0; currentTimeIndex < motionSamplesCount; ++currentTimeIndex)
 	{
 		// positioning on next point of time (starting from currentTime)
-		currentTime += (float)currentTimeIndex / (deformationMBFrameCount - 1);
+		currentTime += (float)currentTimeIndex / (motionSamplesCount - 1);
 		MGlobal::viewFrame(currentTime);
 
 		//fnMesh.setObject
@@ -137,10 +137,10 @@ bool FireMaya::MeshTranslator::MeshPolygonData::Initialize(const MFnMesh& fnMesh
 	countNormals = fnMesh.numNormals(&mstatus);
 	assert(MStatus::kSuccess == mstatus);
 
-	deformationMBFrameCount = deformationFrameCount;
+	motionSamplesCount = deformationFrameCount;
 	if (!ProcessDeformationFrameCount(fnMesh, fullDagPath))
 	{
-		deformationMBFrameCount = 0;
+		motionSamplesCount = 0;
 	}
 
 	// get triangle count (max possible count; this number is used for reserve only)
