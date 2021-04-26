@@ -224,6 +224,7 @@ std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Conte
 	}
 
 	MFnMesh fnMesh(object, &mayaStatus);
+
 	if (MStatus::kSuccess != mayaStatus)
 	{
 		mayaStatus.perror("MFnMesh constructor");
@@ -238,7 +239,9 @@ std::vector<frw::Shape> FireMaya::MeshTranslator::TranslateMesh(const frw::Conte
 
 	// get common data from mesh
 	MeshPolygonData meshPolygonData;
-	bool successfullyInitialized = meshPolygonData.Initialize(fnMesh, deformationFrameCount, fullDagPath);
+
+	/// for tesselated or smoothed mesh disable deformation MB for now
+	bool successfullyInitialized = meshPolygonData.Initialize(fnMesh, object != originalObject ? 0 : deformationFrameCount, fullDagPath);
 	if (!successfullyInitialized)
 	{
 		std::string nodeName = fnMesh.name().asChar();
