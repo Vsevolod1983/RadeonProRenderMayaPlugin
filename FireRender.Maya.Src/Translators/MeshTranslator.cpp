@@ -84,6 +84,8 @@ bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(MFn
 
 	unsigned int currentTimeIndex = 0;
 
+	MDagPath dagPath;
+
 	for (unsigned int currentTimeIndex = 0; currentTimeIndex < motionSamplesCount; ++currentTimeIndex)
 	{
 		// positioning on next point of time (starting from currentTime)
@@ -91,13 +93,11 @@ bool FireMaya::MeshTranslator::MeshPolygonData::ProcessDeformationFrameCount(MFn
 		MGlobal::viewFrame(currentTime);
 
 		// We need to update fnMesh function set in order to apply time change
-		{
-			MSelectionList sl;
-			sl.add(fullDagPath);
-			MDagPath dagPath;
-			sl.getDagPath(0, dagPath);
-			fnMesh.setObject(dagPath.node());
-		}
+	
+		MSelectionList sl;
+		sl.add(fullDagPath);
+		sl.getDagPath(0, dagPath);
+		fnMesh.setObject(dagPath);
 
 		const float* pData = fnMesh.getRawPoints(&status);
 		assert(MStatus::kSuccess == status);
