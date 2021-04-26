@@ -100,17 +100,6 @@ void FireMaya::SingleShaderMeshTranslator::TranslateMesh(
 		mesh_properties[2] = (rpr_mesh_info)0;
 	}
 
-	for (int i = 0; i < meshData.countVertices * 3; i++)
-	{
-		float pVert = meshData.pVertices[i];
-		float pBiggerArr = meshData.arrVertices[meshData.countVertices * 3 + i];
-		if (meshData.pVertices[i] != meshData.arrVertices[meshData.countVertices * 3 + i])
-		{
-			int g = 0;
-			g++;
-		}
-	}
-
 	elements[0] = context.CreateMeshEx(
 		meshData.GetVertices(), meshData.GetTotalVertexCount(), sizeof(Float3),
 		meshData.GetNormals(), meshData.GetTotalNormalCount(), sizeof(Float3),
