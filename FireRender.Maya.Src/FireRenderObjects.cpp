@@ -1605,7 +1605,7 @@ void FireRenderMeshCommon::AssignShadingEngines(const MObjectArray& shadingEngin
 	}
 }
 
-bool FireRenderMeshCommon::IsMotionBlurEnabled(MFnDagNode& meshFn)
+bool FireRenderMeshCommon::IsMotionBlurEnabled(const MFnDagNode& meshFn)
 {
 	// Checking of MotionBlur parameter in RenderStats group of mesh
 	bool objectMotionBlur = true;
@@ -1619,7 +1619,7 @@ bool FireRenderMeshCommon::IsMotionBlurEnabled(MFnDagNode& meshFn)
 	return (context()->motionBlur() && objectMotionBlur);
 }
 
-void FireRenderMeshCommon::ProcessMotionBlur(MFnDagNode& meshFn)
+void FireRenderMeshCommon::ProcessMotionBlur(const MFnDagNode& meshFn)
 {
 	if (!IsMotionBlurEnabled(meshFn))
 	{
