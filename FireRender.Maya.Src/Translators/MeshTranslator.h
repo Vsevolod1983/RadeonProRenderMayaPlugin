@@ -54,7 +54,7 @@ namespace FireMaya
 			const float* GetVertices() const { return arrVertices.size() > 0 ? arrVertices.data() : pVertices; }
 			const float* GetNormals() const { return arrNormals.size() > 0 ? arrNormals.data() : pNormals; }
 
-		//private:
+		private:
 			const float* pVertices;
 			const float* pNormals;
 		};
