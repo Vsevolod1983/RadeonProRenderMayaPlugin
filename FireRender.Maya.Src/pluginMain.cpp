@@ -28,6 +28,7 @@ limitations under the License.
 #include "FireRenderPBRMaterial.h"
 #include "FireRenderTransparentMaterial.h"
 #include "FireRenderMaterialSwatchRender.h"
+#include "FireRenderToonMaterial.h"
 #include "FireRenderSwatchInstance.h"
 
 #include "FireRenderFresnel.h"
@@ -819,6 +820,12 @@ MStatus initializePlugin(MObject obj)
 		FireMaya::ShadowCatcherMaterial::creator,
 		FireMaya::ShadowCatcherMaterial::initialize,
 		MPxNode::kDependNode, &UserClassify));
+
+	CHECK_MSTATUS(plugin.registerNode(namePrefix + "ToonMaterial", FireMaya::ToonMaterial::FRTypeID(),
+		FireMaya::ToonMaterial::creator,
+		FireMaya::ToonMaterial::initialize,
+		MPxNode::kDependNode, &UserClassify));
+
 
 	CHECK_MSTATUS(plugin.registerNode(namePrefix + "Displacement", FireMaya::Displacement::FRTypeID(),
 		FireMaya::Displacement::creator,
