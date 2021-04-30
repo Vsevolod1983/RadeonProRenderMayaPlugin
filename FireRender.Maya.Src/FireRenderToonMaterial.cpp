@@ -41,9 +41,11 @@ MStatus FireMaya::ToonMaterial::initialize()
 
 	Attribute::showAdvanced = nAttr.create("showAdvanced", "sa", MFnNumericData::kBoolean, false);
 	MAKE_INPUT(nAttr);
+	nAttr.setConnectable(false);
 
 	Attribute::showMixLevels = nAttr.create("showMixLevels", "sml", MFnNumericData::kBoolean, false);
 	MAKE_INPUT(nAttr);
+	nAttr.setConnectable(false);
 
 	Attribute::color = nAttr.createColor("color", "c");
 	MAKE_INPUT(nAttr);

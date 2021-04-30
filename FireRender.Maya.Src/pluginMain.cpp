@@ -651,9 +651,7 @@ MStatus initializePlugin(MObject obj)
 		iesClassification += ":swatch/"_ms + swatchName;
 		envLightClassification += ":swatch/"_ms + swatchName;
 
-#ifndef MAYA2015
 		CHECK_MSTATUS(plugin.registerRenderer(FIRE_RENDER_NAME, FireMaterialViewRenderer::creator));
-#endif
 	}
 
 	CHECK_MSTATUS(plugin.registerCommand("fireRender", FireRenderCmd::creator, FireRenderCmd::newSyntax));
