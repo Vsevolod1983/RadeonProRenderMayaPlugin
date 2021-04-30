@@ -183,7 +183,7 @@ frw::Shader FireMaya::ToonMaterial::GetShader(Scope& scope)
 
 	int type = normalValue.GetNodeType();
 
-	if (type == frw::ValueTypeNormalMap || frw::ValueTypeBumpMap)
+	if (type == frw::ValueTypeNormalMap || type == frw::ValueTypeBumpMap)
 	{
 		shader.SetValue(RPR_MATERIAL_INPUT_NORMAL, normalValue);
 	}
