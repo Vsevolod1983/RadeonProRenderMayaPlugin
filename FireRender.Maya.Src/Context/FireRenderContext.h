@@ -644,6 +644,8 @@ public:
 
 	int GetSamplesPerUpdate() const { return m_samplesPerUpdate; }
 
+	void setupDenoiserForViewport();
+
 protected:
 	static int INCORRECT_PLUGIN_ID;
 
@@ -692,6 +694,7 @@ private:
 	void turnOnAOVsForDenoiser(bool allocBuffer = false);
 	void turnOnAOVsForContour(bool allocBuffer = false);
 	bool CanCreateAiDenoiser() const;
+
 	void setupDenoiserFB(void);
 	void setupDenoiserRAM(void);
 	void BuildLateinitObjects();

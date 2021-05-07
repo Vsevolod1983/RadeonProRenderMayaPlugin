@@ -503,6 +503,48 @@ bool FireRenderContext::CanCreateAiDenoiser() const
 }
 #endif
 
+void FireRenderContext::setupDenoiserForViewport()
+{
+	bool canCreateAiDenoiser = CanCreateAiDenoiser();
+	bool useOpenImageDenoise = !canCreateAiDenoiser;
+
+	std::uint32_t width = m_pixelBuffers[RPR_AOV_COLOR].width();
+	std::uint32_t height = m_pixelBuffers[RPR_AOV_COLOR].height();
+	size_t rifImageSize = sizeof(RV_PIXEL) * width * height;
+
+	try
+	{
+		MString path;
+		MStatus s = MGlobal::executeCommand("getModulePath -moduleName RadeonProRender", path);
+		MString mlModelsFolder = path + "/data/models";
+
+		m_denoiserFilter = std::shared_ptr<ImageFilter>(new ImageFilter(
+			context(),
+			width,
+			height,
+			mlModelsFolder.asChar()
+		));
+
+		RifFilterType ft = RifFilterType::MlDenoise;
+		m_denoiserFilter->CreateFilter(ft, useOpenImageDenoise);
+	
+		m_denoiserFilter->AddInput(RifColor, m_pixelBuffers[RPR_AOV_COLOR].data(), rifImageSize, 0.0f);
+
+		m_denoiserFilter->AddInput(RifNormal, m_pixelBuffers[RPR_AOV_SHADING_NORMAL].data(), rifImageSize, 0.0f);
+		m_denoiserFilter->AddInput(RifDepth, m_pixelBuffers[RPR_AOV_DEPTH].data(), rifImageSize, 0.0f);
+		m_denoiserFilter->AddInput(RifAlbedo, m_pixelBuffers[RPR_AOV_DIFFUSE_ALBEDO].data(), rifImageSize, 0.0f);
+
+		m_denoiserFilter->AttachFilter();
+	}
+	catch (std::exception& e)
+	{
+		m_denoiserFilter.reset();
+		ErrorPrint(e.what());
+		MGlobal::displayError("RPR failed to setup denoiser, turning it off.");
+	}
+}
+
+
 void FireRenderContext::setupDenoiserRAM()
 {
 	bool canCreateAiDenoiser = CanCreateAiDenoiser();
