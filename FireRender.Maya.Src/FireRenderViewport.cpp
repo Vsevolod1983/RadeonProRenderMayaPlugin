@@ -664,6 +664,7 @@ void FireRenderViewport::resizeFrameBufferStandard(unsigned int width, unsigned 
 	// Update the RPR context dimensions.
 	m_contextPtr->resize(width, height, false);
 	m_contextPtr->setupDenoiserForViewport();
+	//m_contextPtr->TryCreateDenoiserImageFilters();
 
 	// Resize the pixel buffer that
 	// will receive frame buffer data.
@@ -813,6 +814,17 @@ void FireRenderViewport::readFrameBuffer(FireMaya::StoredFrame* storedFrame)
 
 		// process frame buffer
 		m_contextPtr->readFrameBuffer(params);
+
+		std::vector<float> vecData = m_contextPtr->DenoiseAndUpscaleForViewport();
+
+		assert(vecData.size() != 0);
+		if (vecData.size() != 0)
+		{
+			RV_PIXEL* data = (RV_PIXEL*)vecData.data();
+
+			// put denoised image to ipr buffer
+			memcpy(m_pixels.data(), data, sizeof(RV_PIXEL) * m_pixels.size());
+		}
 
 		// Flag as updated so the pixels will
 		// be copied to the viewport texture.

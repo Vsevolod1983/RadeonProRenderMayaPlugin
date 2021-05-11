@@ -328,6 +328,8 @@ public:
 	// do action for each framebuffer matching filter
 	void ForEachFramebuffer(std::function<void(int aovId)> actionFunc, std::function<bool(int aovId)> filter);
 
+	std::vector<float> DenoiseAndUpscaleForViewport();
+
 	// try running denoiser; result is saved into RAM buffer in context
 	std::vector<float> DenoiseIntoRAM(void);
 
