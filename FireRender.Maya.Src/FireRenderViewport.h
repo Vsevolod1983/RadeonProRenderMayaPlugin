@@ -169,6 +169,8 @@ private:
 
 	NorthStarRenderingHelper m_NorthStarRenderingHelper;
 
+	bool m_finishedFrame;
+
 	// Private Methods
 	// -----------------------------------------------------------------------------
 private:
@@ -204,7 +206,7 @@ private:
 	MStatus refreshContext();
 
 	/** Read data from the RPR frame buffer into the texture. */
-	void readFrameBuffer(FireMaya::StoredFrame* storedFrame = nullptr);
+	void readFrameBuffer(FireMaya::StoredFrame* storedFrame = nullptr, bool runUpscaler = false);
 
 	/** Update the texture with the supplied frame data. */
 	MStatus updateTexture(void* data, unsigned int width, unsigned int height);

@@ -66,7 +66,7 @@ struct DenoiserSettings
 		colorOnly = false;
 		enable16bitCompute = false;
 
-		viewportUpscaleDenoiseEnabled = false;
+		viewportDenoiseUpscaleEnabled = false;
 	}
 
 	bool enabled;
@@ -82,7 +82,7 @@ struct DenoiserSettings
 	bool colorOnly;
 	bool enable16bitCompute;
 
-	bool viewportUpscaleDenoiseEnabled;
+	bool viewportDenoiseUpscaleEnabled;
 };
 
 struct CompletionCriteriaParams

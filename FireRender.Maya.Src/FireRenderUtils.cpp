@@ -563,9 +563,9 @@ void FireRenderGlobalsData::readDenoiserParameters(const MFnDependencyNode& frGl
 	if (!plug.isNull())
 		denoiserSettings.enable16bitCompute = plug.asInt() == 1;
 
-	plug = frGlobalsNode.findPlug("viewportUpscaleDenoiseEnabled");
+	plug = frGlobalsNode.findPlug("viewportDenoiseUpscaleEnabled");
 	if (!plug.isNull())
-		denoiserSettings.viewportUpscaleDenoiseEnabled = plug.asInt() == 1;	
+		denoiserSettings.viewportDenoiseUpscaleEnabled = plug.asInt() == 1;	
 }
 
 bool FireRenderGlobalsData::isTonemapping(MString name)

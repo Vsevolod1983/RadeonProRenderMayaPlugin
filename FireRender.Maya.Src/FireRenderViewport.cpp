@@ -64,6 +64,7 @@ FireRenderViewport::FireRenderViewport(const MString& panelName) :
 	m_textureChanged(false),
 	m_showDialogNeeded(false),
 	m_closeDialogNeeded(false),
+	m_finishedFrame(false),
 	m_createFailed(false),
 	m_currentAOV(RPR_AOV_COLOR)
 {
@@ -258,6 +259,8 @@ bool FireRenderViewport::RunOnViewportThread()
 		{
 			try
 			{
+				m_finishedFrame = false;
+
 				FireRenderContext::Lock lock(m_contextPtr.get(), "FireRenderContext::StateRendering"); // lock with constructor which will not change state
 
 				// Perform a render iteration.
@@ -316,8 +319,37 @@ bool FireRenderViewport::RunOnViewportThread()
 		}
 		else
 		{
-			// Don't waste CPU time too much when not rendering
-			this_thread::sleep_for(2ms);
+			if (m_contextPtr->IsDenoiserEnabled() && m_currentAOV == RPR_AOV_COLOR && !m_finishedFrame)
+			{
+				m_finishedFrame = true;
+
+				readFrameBuffer(nullptr, true);
+
+				FireRenderThread::RunProcOnMainThread([&]()
+					{
+						// Schedule a Maya viewport refresh or set exit flag
+						MStatus status;
+						M3dView activeView;
+						status = M3dView::getM3dViewFromModelPanel(m_panelName, activeView);
+						if (status == MStatus::kSuccess) // Regular render view
+						{
+							m_view.scheduleRefresh();
+						}
+						else //Standalone render view (hypershade only?)
+						{
+							activeView = M3dView::active3dView(&status);
+							if (activeView.widget() == m_widget)
+								m_view.scheduleRefresh();
+							else
+								m_contextPtr->SetState(FireRenderContext::StateExiting);
+						}
+					});
+			}
+			else
+			{
+				// Don't waste CPU time too much when not rendering
+				this_thread::sleep_for(2ms);
+			}
 		}
 
 		return true;
@@ -663,7 +695,7 @@ void FireRenderViewport::resizeFrameBufferStandard(unsigned int width, unsigned 
 {
 	// Update the RPR context dimensions.
 	m_contextPtr->resize(width, height, false);
-	m_contextPtr->setupDenoiserForViewport();
+	//m_contextPtr->setupDenoiserForViewport();
 	//m_contextPtr->TryCreateDenoiserImageFilters();
 
 	// Resize the pixel buffer that
@@ -773,7 +805,7 @@ MStatus FireRenderViewport::refreshContext()
 }
 
 // -----------------------------------------------------------------------------
-void FireRenderViewport::readFrameBuffer(FireMaya::StoredFrame* storedFrame)
+void FireRenderViewport::readFrameBuffer(FireMaya::StoredFrame* storedFrame, bool runDenoiserAndUpscaler/* = false*/)
 {
 	// The resolved frame buffer is shared with the Maya viewport
 	// when GL interop is active, so only the resolve step is required.
@@ -815,15 +847,18 @@ void FireRenderViewport::readFrameBuffer(FireMaya::StoredFrame* storedFrame)
 		// process frame buffer
 		m_contextPtr->readFrameBuffer(params);
 
-		std::vector<float> vecData = m_contextPtr->DenoiseAndUpscaleForViewport();
-
-		assert(vecData.size() != 0);
-		if (vecData.size() != 0)
+		if (runDenoiserAndUpscaler)
 		{
-			RV_PIXEL* data = (RV_PIXEL*)vecData.data();
+			std::vector<float> vecData = m_contextPtr->DenoiseAndUpscaleForViewport();
 
-			// put denoised image to ipr buffer
-			memcpy(m_pixels.data(), data, sizeof(RV_PIXEL) * m_pixels.size());
+			assert(vecData.size() != 0);
+			if (vecData.size() != 0)
+			{
+				RV_PIXEL* data = (RV_PIXEL*)vecData.data();
+
+				// put denoised image to ipr buffer
+				memcpy(m_pixels.data(), data, sizeof(RV_PIXEL) * m_pixels.size());
+			}
 		}
 
 		// Flag as updated so the pixels will

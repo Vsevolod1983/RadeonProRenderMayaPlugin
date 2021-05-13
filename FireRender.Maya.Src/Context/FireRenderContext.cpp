@@ -103,6 +103,7 @@ FireRenderContext::FireRenderContext() :
 	m_cameraDirty(true),
 	m_denoiserChanged(false),
 	m_denoiserFilter(nullptr),
+	m_upscalerFilter(nullptr),
 	m_shadowColor{ 0.0f, 0.0f, 0.0f },
 	m_bgColor{ 1.0f, 1.0f, 1.0f },
 	m_shadowTransparency(0),
@@ -127,6 +128,7 @@ FireRenderContext::~FireRenderContext()
 	removeCallbacks();
 
 	m_denoiserFilter.reset();
+	m_upscalerFilter.reset();
 }
 
 int FireRenderContext::initializeContext()
@@ -322,7 +324,7 @@ bool FireRenderContext::buildScene(bool isViewport, bool glViewport, bool freshe
 		EnableAOVsFromRSIfEnvVarSet(*this, m_globals.aovs);
 	}
 
-	if (m_globals.denoiserSettings.enabled)
+	if (IsDenoiserEnabled())
 	{
 		turnOnAOVsForDenoiser();
 	}
@@ -503,7 +505,42 @@ bool FireRenderContext::CanCreateAiDenoiser() const
 }
 #endif
 
-void FireRenderContext::setupDenoiserForViewport()
+MString GetModelPath()
+{
+	MString path;
+	MStatus s = MGlobal::executeCommand("getModulePath -moduleName RadeonProRender", path);
+	MString modelsFolder = path + "/data/models";
+
+	return modelsFolder;
+}
+
+bool FireRenderContext::setupUpscalerForViewport()
+{
+	std::uint32_t width = (std::uint32_t) m_pixelBuffers[RPR_AOV_COLOR].width();
+	std::uint32_t height = (std::uint32_t) m_pixelBuffers[RPR_AOV_COLOR].height();
+
+	size_t rifImageSize = sizeof(RV_PIXEL) * width * height;
+
+	// setup upscaler
+	m_upscalerFilter = std::shared_ptr<ImageFilter>(new ImageFilter(
+		context(),
+		width,
+		height,
+		GetModelPath().asChar()
+	));
+
+	m_upscalerFilter->CreateFilter(RifFilterType::Upscaler, /*parameter is ignored for upscaler creation*/ false);
+
+	//float* p = new float[rifImageSize / sizeof(float)];
+	m_upscalerFilter->AddInput(RifColor, m_pixelBuffers[RPR_AOV_COLOR].data(), rifImageSize, 0.0f);
+
+	m_upscalerFilter->AttachFilter();
+
+	return true;
+}
+
+
+bool FireRenderContext::setupDenoiserForViewport()
 {
 	bool canCreateAiDenoiser = CanCreateAiDenoiser();
 	bool useOpenImageDenoise = !canCreateAiDenoiser;
@@ -514,9 +551,7 @@ void FireRenderContext::setupDenoiserForViewport()
 
 	try
 	{
-		MString path;
-		MStatus s = MGlobal::executeCommand("getModulePath -moduleName RadeonProRender", path);
-		MString mlModelsFolder = path + "/data/models";
+		MString mlModelsFolder = GetModelPath();
 
 		m_denoiserFilter = std::shared_ptr<ImageFilter>(new ImageFilter(
 			context(),
@@ -534,14 +569,22 @@ void FireRenderContext::setupDenoiserForViewport()
 		m_denoiserFilter->AddInput(RifDepth, m_pixelBuffers[RPR_AOV_DEPTH].data(), rifImageSize, 0.0f);
 		m_denoiserFilter->AddInput(RifAlbedo, m_pixelBuffers[RPR_AOV_DIFFUSE_ALBEDO].data(), rifImageSize, 0.0f);
 
+		RifParam p = { RifParamType::RifOther, true };
+		m_denoiserFilter->AddParam("enable16bitCompute", p);
+
 		m_denoiserFilter->AttachFilter();
+
 	}
 	catch (std::exception& e)
 	{
 		m_denoiserFilter.reset();
 		ErrorPrint(e.what());
 		MGlobal::displayError("RPR failed to setup denoiser, turning it off.");
+
+		return false;
 	}
+
+	return true;
 }
 
 
@@ -556,9 +599,7 @@ void FireRenderContext::setupDenoiserRAM()
 
 	try
 	{
-		MString path;
-		MStatus s = MGlobal::executeCommand("getModulePath -moduleName RadeonProRender", path);
-		MString mlModelsFolder = path + "/data/models";
+		MString mlModelsFolder = GetModelPath();
 
 		m_denoiserFilter = std::shared_ptr<ImageFilter>(new ImageFilter(
 			context(), 
@@ -656,9 +697,7 @@ void FireRenderContext::setupDenoiserFB()
 
 	try
 	{
-		MString path;
-		MStatus s = MGlobal::executeCommand("getModulePath -moduleName RadeonProRender", path);
-		MString mlModelsFolder = path + "/data/models";
+		MString mlModelsFolder = GetModelPath();
 
 		m_denoiserFilter = std::shared_ptr<ImageFilter>(new ImageFilter(context(), m_width, m_height, mlModelsFolder.asChar()));
 
@@ -3168,6 +3207,17 @@ void FireRenderContext::SetRenderType(RenderType renderType)
 	}
 }
 
+bool FireRenderContext::IsDenoiserEnabled(void) const 
+{
+	if (!IsDenoiserSupported())
+	{
+		return false;
+	}
+
+	bool viewportRendering = GetRenderType() == RenderType::ViewportRender;
+	return m_globals.denoiserSettings.enabled && !viewportRendering || m_globals.denoiserSettings.viewportDenoiseUpscaleEnabled && viewportRendering;
+}
+
 bool FireRenderContext::ShouldResizeTexture(unsigned int& max_width, unsigned int& max_height) const
 {
 	if (GetRenderType() == RenderType::Thumbnail)
@@ -3266,6 +3316,12 @@ std::vector<float> FireRenderContext::DenoiseAndUpscaleForViewport()
 		ReadDenoiserFrameBuffersIntoRAM(params);
 	}
 
+	std::lock_guard<std::mutex> lock(m_rifLock);
+	bool isDenoiserInitialized = setupDenoiserForViewport(); // will read data from outBuffers if useRAMBuffer == true
+	assert(isDenoiserInitialized);
+	if (!isDenoiserInitialized || !IsDenoiserCreated())
+		return std::vector<float>();
+
 	std::vector<float> vecData;
 	bool denoiseResult = false;
 	vecData = GetDenoisedData(denoiseResult);
@@ -3275,8 +3331,19 @@ std::vector<float> FireRenderContext::DenoiseAndUpscaleForViewport()
 	RV_PIXEL* data = (RV_PIXEL*)vecData.data();
 	if (useRAMBuffer)
 	{
-		m_pixelBuffers[RPR_AOV_COLOR].overwrite(data, region, params.height, params.width, RPR_AOV_COLOR);
+		// remove extra copying
+		m_pixelBuffers[RPR_AOV_COLOR].overwrite((RV_PIXEL*) vecData.data(), region, params.height, params.width, RPR_AOV_COLOR);
+
+		setupUpscalerForViewport();
+
+		m_upscalerFilter->Run();
+		vecData = m_upscalerFilter->GetData();
+
+		m_pixelBuffers[RPR_AOV_COLOR].overwrite((RV_PIXEL*) vecData.data(), region, params.height, params.width, RPR_AOV_COLOR);
+
 		params.pixels = m_pixelBuffers[RPR_AOV_COLOR].get();
+
+
 		// run merge opacity
 		/*params.aov = RPR_AOV_COLOR;
 		params.mergeOpacity = camera().GetAlphaMask() && isAOVEnabled(RPR_AOV_OPACITY);

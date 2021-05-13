@@ -533,7 +533,7 @@ public:
 
 	bool IsDenoiserCreated(void) const { return m_denoiserFilter != nullptr; }
 
-	bool IsDenoiserEnabled(void) const { return (IsDenoiserSupported() && m_globals.denoiserSettings.enabled);	}
+	bool IsDenoiserEnabled(void) const;
 
 	bool IsTileRender(void) const { return (m_globals.tileRenderingEnabled && !isInteractive()); }
 
@@ -646,7 +646,8 @@ public:
 
 	int GetSamplesPerUpdate() const { return m_samplesPerUpdate; }
 
-	void setupDenoiserForViewport();
+	bool setupUpscalerForViewport();
+	bool setupDenoiserForViewport();
 
 protected:
 	static int INCORRECT_PLUGIN_ID;
@@ -704,6 +705,7 @@ private:
 private:
 	std::mutex m_rifLock;
 	std::shared_ptr<ImageFilter> m_denoiserFilter;
+	std::shared_ptr<ImageFilter> m_upscalerFilter;
 
 	frw::DirectionalLight m_defaultLight;
 
