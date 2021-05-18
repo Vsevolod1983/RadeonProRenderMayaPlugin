@@ -683,6 +683,9 @@
     <ClCompile Include="RenderViewUpdater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ViewportTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FireRenderMaterialSwatchRender.h">
@@ -1172,6 +1175,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RenderViewUpdater.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewportTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

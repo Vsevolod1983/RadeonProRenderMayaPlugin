@@ -285,6 +285,9 @@ public:
 		bool UseTempData(void) const { return (region.getWidth() < width || region.getHeight() < height); }
 	};
 
+	// this is part of readFrameBuffer call and is only thing nneded for viewport
+	RV_PIXEL* readFrameBufferSimple(ReadFrameBufferRequestParams& params);
+
 	// Read frame buffer pixels and optionally normalize and flip the image.
 	void readFrameBuffer(ReadFrameBufferRequestParams& params);
 
@@ -300,7 +303,7 @@ public:
 	// reads aov directly into internal storage
 	RV_PIXEL* GetAOVData(const ReadFrameBufferRequestParams& params);
 
-	void MergeOpacity(const ReadFrameBufferRequestParams& params);
+	void ReadOpacityAOV(const ReadFrameBufferRequestParams& params);
 
 	void CombineOpacity(int aov, RV_PIXEL* pixels, unsigned int area);
 
@@ -646,7 +649,7 @@ public:
 
 	int GetSamplesPerUpdate() const { return m_samplesPerUpdate; }
 
-	bool setupUpscalerForViewport();
+	bool setupUpscalerForViewport(RV_PIXEL* data);
 	bool setupDenoiserForViewport();
 
 protected:

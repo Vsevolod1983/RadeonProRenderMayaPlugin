@@ -514,7 +514,7 @@ MString GetModelPath()
 	return modelsFolder;
 }
 
-bool FireRenderContext::setupUpscalerForViewport()
+bool FireRenderContext::setupUpscalerForViewport(RV_PIXEL* data)
 {
 	std::uint32_t width = (std::uint32_t) m_pixelBuffers[RPR_AOV_COLOR].width();
 	std::uint32_t height = (std::uint32_t) m_pixelBuffers[RPR_AOV_COLOR].height();
@@ -524,15 +524,15 @@ bool FireRenderContext::setupUpscalerForViewport()
 	// setup upscaler
 	m_upscalerFilter = std::shared_ptr<ImageFilter>(new ImageFilter(
 		context(),
-		width,
-		height,
+		2 * width,
+		2 * height,
 		GetModelPath().asChar()
 	));
 
 	m_upscalerFilter->CreateFilter(RifFilterType::Upscaler, /*parameter is ignored for upscaler creation*/ false);
 
-	//float* p = new float[rifImageSize / sizeof(float)];
-	m_upscalerFilter->AddInput(RifColor, m_pixelBuffers[RPR_AOV_COLOR].data(), rifImageSize, 0.0f);
+	m_upscalerFilter->SetInputOverrideSize(width, height);
+	m_upscalerFilter->AddInput(RifColor, (float*) data, rifImageSize, 0.0f);
 
 	m_upscalerFilter->AttachFilter();
 
@@ -545,8 +545,8 @@ bool FireRenderContext::setupDenoiserForViewport()
 	bool canCreateAiDenoiser = CanCreateAiDenoiser();
 	bool useOpenImageDenoise = !canCreateAiDenoiser;
 
-	std::uint32_t width = m_pixelBuffers[RPR_AOV_COLOR].width();
-	std::uint32_t height = m_pixelBuffers[RPR_AOV_COLOR].height();
+	std::uint32_t width = (std::uint32_t) m_pixelBuffers[RPR_AOV_COLOR].width();
+	std::uint32_t height = (std::uint32_t) m_pixelBuffers[RPR_AOV_COLOR].height();
 	size_t rifImageSize = sizeof(RV_PIXEL) * width * height;
 
 	try
@@ -1615,7 +1615,7 @@ RV_PIXEL* FireRenderContext::GetAOVData(const ReadFrameBufferRequestParams& para
 	return data;
 }
 
-void FireRenderContext::MergeOpacity(const ReadFrameBufferRequestParams& params)
+void FireRenderContext::ReadOpacityAOV(const ReadFrameBufferRequestParams& params)
 {
 	// No need to merge opacity for any FB other then color
 	if (!params.mergeOpacity || params.aov != RPR_AOV_COLOR)
@@ -1657,12 +1657,9 @@ void FireRenderContext::CombineOpacity(int aov, RV_PIXEL* pixels, unsigned int a
 	combineWithOpacity(pixels, area, m_opacityData.get());
 }
 
-void FireRenderContext::readFrameBuffer(ReadFrameBufferRequestParams& params)
+RV_PIXEL* FireRenderContext::readFrameBufferSimple(ReadFrameBufferRequestParams& params)
 {
 	RPR_THREAD_ONLY;
-
-	// resolve frame buffer
-	rpr_framebuffer frameBuffer = frameBufferAOV_Resolved(params.aov);
 
 	// debug output (if enabled)
 #ifdef DUMP_AOV_SOURCE
@@ -1672,18 +1669,28 @@ void FireRenderContext::readFrameBuffer(ReadFrameBufferRequestParams& params)
 	// process shadow and/or reflection catcher logic
 	bool isShadowReflectionCatcherUsed = ConsiderShadowReflectionCatcherOverride(params);
 	if (isShadowReflectionCatcherUsed)
-		return;
+		return nullptr;
 
 	// load data from AOV
-	RV_PIXEL* data = nullptr;
-	data = GetAOVData(params);
+	return GetAOVData(params);
+}
 
-	// No need to merge opacity for any FB other then color
-	MergeOpacity(params);
+void FireRenderContext::readFrameBuffer(ReadFrameBufferRequestParams& params)
+{
+	RV_PIXEL* data = readFrameBufferSimple(params);
+
+	if (data == nullptr)
+	{
+		return;
+	}
+
+	// Read opacity AOV if needed
+	ReadOpacityAOV(params);
 
 	// Copy the region from the temporary
 	// buffer into supplied pixel memory.
-	if (params.UseTempData() || IsDenoiserCreated())
+	// _TODO Investigate if "|| IsDenoiserCreated()" is really necessary?  
+	if (params.UseTempData() || (IsDenoiserCreated()))
 	{
 		copyPixels(params.pixels, data, params.width, params.height, params.region);
 	}
@@ -3331,29 +3338,10 @@ std::vector<float> FireRenderContext::DenoiseAndUpscaleForViewport()
 	RV_PIXEL* data = (RV_PIXEL*)vecData.data();
 	if (useRAMBuffer)
 	{
-		// remove extra copying
-		m_pixelBuffers[RPR_AOV_COLOR].overwrite((RV_PIXEL*) vecData.data(), region, params.height, params.width, RPR_AOV_COLOR);
-
-		setupUpscalerForViewport();
+		setupUpscalerForViewport(data);
 
 		m_upscalerFilter->Run();
 		vecData = m_upscalerFilter->GetData();
-
-		m_pixelBuffers[RPR_AOV_COLOR].overwrite((RV_PIXEL*) vecData.data(), region, params.height, params.width, RPR_AOV_COLOR);
-
-		params.pixels = m_pixelBuffers[RPR_AOV_COLOR].get();
-
-
-		// run merge opacity
-		/*params.aov = RPR_AOV_COLOR;
-		params.mergeOpacity = camera().GetAlphaMask() && isAOVEnabled(RPR_AOV_OPACITY);
-		MergeOpacity(params);
-
-		// combine (Opacity to Alpha)
-		if (params.mergeOpacity)
-		{
-			CombineOpacity(RPR_AOV_COLOR, data, tempRegion.getArea());
-		}*/
 	}
 
 	return vecData;
@@ -3419,7 +3407,7 @@ std::vector<float> FireRenderContext::DenoiseIntoRAM()
 		// run merge opacity
 		params.aov = RPR_AOV_COLOR;
 		params.mergeOpacity = camera().GetAlphaMask() && isAOVEnabled(RPR_AOV_OPACITY);
-		MergeOpacity(params);
+		ReadOpacityAOV(params);
 
 		// combine (Opacity to Alpha)
 		if (params.mergeOpacity)
