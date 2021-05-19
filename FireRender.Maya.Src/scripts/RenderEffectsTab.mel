@@ -321,7 +321,7 @@ global proc createFireRenderDenoiserViewportFrame(string $parent)
 	columnLayout -adjustableColumn true;
 
 	attrControlGrp
-		 -label "Viewport Denoising and Upscaling"
+		 -label "Viewport Denoising and Upscaling (RPR 2.0)"
 		 -attribute "RadeonProRenderGlobals.viewportDenoiseUpscaleEnabled" ;
 
 	setParent ..;	// columnLayout ends

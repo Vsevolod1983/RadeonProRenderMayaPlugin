@@ -610,7 +610,7 @@ bool FireRenderGlobalsData::isDenoiser(MString name)
 {
 	name = GetPropertyNameFromPlugName(name);
 
-	static const std::vector<MString> propNames = { "denoiserEnabled", "denoiserType", "denoiserRadius", "denoiserSamples",
+	static const std::vector<MString> propNames = { "denoiserEnabled", "viewportDenoiseUpscaleEnabled", "denoiserType", "denoiserRadius", "denoiserSamples",
 		"denoiserFilterRadius", "denoiserBandwidth", "denoiserColor", "denoiserDepth", "denoiserNormal", "denoiserTrans" };
 
 	for (const MString& propName : propNames)

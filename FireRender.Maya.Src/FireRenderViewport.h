@@ -181,6 +181,8 @@ private:
 	/** Clean up resources. */
 	void cleanUp();
 
+	bool IsDenoiserUpscalerEnabled() const;
+
 	friend void RenderUpdateCallback(float progress, void* pData);
 	void OnRenderUpdateCallback(float progress);
 

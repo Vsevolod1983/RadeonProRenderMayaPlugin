@@ -1046,10 +1046,13 @@ void FireRenderContext::render(bool lock)
 			}
 		}
 
-		if (m_interactive && m_denoiserChanged && m_globals.denoiserSettings.enabled && IsDenoiserSupported())
+		if (m_interactive && m_denoiserChanged && IsDenoiserEnabled())
 		{
 			turnOnAOVsForDenoiser(true);
-			setupDenoiserFB();
+			if (GetRenderType() != RenderType::ViewportRender)
+			{
+				setupDenoiserFB();
+			}
 			m_denoiserChanged = false;
 		}
 
@@ -1677,6 +1680,8 @@ RV_PIXEL* FireRenderContext::readFrameBufferSimple(ReadFrameBufferRequestParams&
 
 void FireRenderContext::readFrameBuffer(ReadFrameBufferRequestParams& params)
 {
+	RPR_THREAD_ONLY;
+
 	RV_PIXEL* data = readFrameBufferSimple(params);
 
 	if (data == nullptr)

@@ -133,6 +133,21 @@ MStatus FireRenderViewport::setup()
 	return doSetup();
 }
 
+bool FireRenderViewport::IsDenoiserUpscalerEnabled() const
+{
+	if (m_contextPtr == nullptr || m_currentAOV != RPR_AOV_COLOR)
+	{
+		return false;
+	}
+
+	if (!TahoeContext::IsGivenContextRPR2(m_contextPtr.get()))
+	{
+		return false;
+	}
+
+	return m_contextPtr->IsDenoiserEnabled();
+}
+
 MStatus FireRenderViewport::doSetup()
 {
 	MAIN_THREAD_ONLY;
@@ -160,8 +175,11 @@ MStatus FireRenderViewport::doSetup()
 	if (m_isRunning && useAnimationCache)
 		stop();
 
-	width /= 2;
-	height /= 2;
+	if (IsDenoiserUpscalerEnabled())
+	{
+		width /= 2;
+		height /= 2;
+	}
 	// Check if the viewport size has changed.
 	if (width != m_contextPtr->width() || height != m_contextPtr->height())
 	{
@@ -242,7 +260,16 @@ void FireRenderViewport::ScheduleViewportUpdate()
 
 void FireRenderViewport::OnBufferAvailableCallback(float progress)
 {
-	readFrameBuffer();
+	// Get the frame hash.
+	auto hash = m_contextPtr->GetStateHash();
+	stringstream ss;
+	ss << m_panelName.asChar() << ";" << size_t(hash);
+
+	// Try find the frame for the hash.
+	// if not found => creates new frame in cache
+	auto& frame = m_renderedFramesCache[ss.str().c_str()];
+
+	readFrameBuffer(&frame);
 
 	ScheduleViewportUpdate();
 }
@@ -311,7 +338,7 @@ bool FireRenderViewport::RunOnViewportThread()
 		}
 		else
 		{
-			if (m_contextPtr->IsDenoiserEnabled() && m_currentAOV == RPR_AOV_COLOR && !m_showUpscaledFrame)
+			if (IsDenoiserUpscalerEnabled() && !m_showUpscaledFrame)
 			{
 				m_showUpscaledFrame = true;
 
@@ -663,10 +690,13 @@ void FireRenderViewport::resizeFrameBufferStandard(unsigned int width, unsigned 
 	// will receive frame buffer data.
 	m_texture.Resize(width, height);
 
-	// _TODO Add condition
-	if (true)
+	if (IsDenoiserUpscalerEnabled())
 	{
 		m_textureUpscaled.Resize(width * 2, height * 2);
+	}
+	else
+	{
+		m_textureUpscaled.Release();
 	}
 
 	// Perform an initial frame buffer read and update the texture.
@@ -693,21 +723,6 @@ rpr_GLuint* FireRenderViewport::GetGlTexture() const
 {
 	return static_cast<rpr_GLuint*>(m_texture.GetTexture()->resourceHandle());
 }
-
-<<<<<< < HEAD
-	====== =
-	// Get the frame hash.
-	auto hash = m_contextPtr->GetStateHash();
-stringstream ss;
-ss << m_panelName.asChar() << ";" << size_t(hash);
-
-// Try find the frame for the hash.
-// if not found => creates new frame in cache
-auto& frame = m_renderedFramesCache[ss.str().c_str()];
-
-readFrameBuffer(&frame);
-
->>>>>> > develop
 
 // -----------------------------------------------------------------------------
 MStatus FireRenderViewport::renderCached(unsigned int width, unsigned int height)
