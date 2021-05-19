@@ -4,6 +4,12 @@
 
 #include "ViewportTexture.h"
 
+
+ViewportTexture::ViewportTexture() : m_texture(nullptr)
+{
+
+}
+
 ViewportTexture::~ViewportTexture()
 {
 	Release();
@@ -32,7 +38,7 @@ void ViewportTexture::ClearPixels()
 	const unsigned int numComponents = 4;
 	for (unsigned int i = 0; i < m_pixels.size(); i += numComponents)
 	{
-		memcpy(m_pixels.data() + i * numComponents, &zero, sizeof(RV_PIXEL));
+		memcpy(m_pixels.data() + i, &zero, sizeof(RV_PIXEL));
 	}
 }
 

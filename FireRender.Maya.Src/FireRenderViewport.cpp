@@ -513,45 +513,45 @@ void FireRenderViewport::postBlit()
 // -----------------------------------------------------------------------------
 bool FireRenderViewport::initialize()
 {
-	return FireRenderThread::RunOnceAndWait<bool>([this]()
+	try
 	{
-		try
+		m_contextPtr = ContextCreator::CreateAppropriateContextForRenderType(RenderType::ViewportRender);
+		m_contextPtr->SetRenderType(RenderType::ViewportRender);
+
+		m_pCurrentTexture = &m_texture;
+
+		// Initialize the RPR context.
+		bool animating = MAnimControl::isPlaying() || MAnimControl::isScrubbing();
+		bool glViewport = MRenderer::theRenderer()->drawAPIIsOpenGL();
+
+		// enable all mandatory aovs so that it can be resolved and used properly
+		for (int aov : m_alwaysEnabledAOVs)
 		{
-			m_contextPtr = ContextCreator::CreateAppropriateContextForRenderType(RenderType::ViewportRender);
-			m_contextPtr->SetRenderType(RenderType::ViewportRender);
-
-			// Initialize the RPR context.
-			bool animating = MAnimControl::isPlaying() || MAnimControl::isScrubbing();
-			bool glViewport = MRenderer::theRenderer()->drawAPIIsOpenGL();
-
-			// enable all mandatory aovs so that it can be resolved and used properly
-			for (int aov : m_alwaysEnabledAOVs)
-			{
-				m_contextPtr->enableAOV(aov);
-			}
-
-			if (!isAOVShouldBeAlwaysEnabled(m_currentAOV))
-			{
-				m_contextPtr->enableAOV(m_currentAOV);
-			}
-
-			if (!m_contextPtr->buildScene(true, glViewport))
-			{
-				return false;
-			}
-
-			if (TahoeContext::IsGivenContextRPR2(m_contextPtr.get()))
-			{
-				m_NorthStarRenderingHelper.SetData(m_contextPtr.get(), std::bind(&FireRenderViewport::OnBufferAvailableCallback, this, std::placeholders::_1));
-			}
+			m_contextPtr->enableAOV(aov);
 		}
-		catch (...)
+
+		if (!isAOVShouldBeAlwaysEnabled(m_currentAOV))
 		{
-			m_error.set(current_exception());
+			m_contextPtr->enableAOV(m_currentAOV);
+		}
+
+		if (!m_contextPtr->buildScene(true, glViewport))
+		{
 			return false;
 		}
-		return true;
-	});
+
+		if (TahoeContext::IsGivenContextRPR2(m_contextPtr.get()))
+		{
+			m_NorthStarRenderingHelper.SetData(m_contextPtr.get(), std::bind(&FireRenderViewport::OnBufferAvailableCallback, this, std::placeholders::_1));
+		}
+	}
+	catch (...)
+	{
+		m_error.set(current_exception());
+		return false;
+	}
+
+	return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -662,6 +662,12 @@ void FireRenderViewport::resizeFrameBufferStandard(unsigned int width, unsigned 
 	// Resize the pixel buffer that
 	// will receive frame buffer data.
 	m_texture.Resize(width, height);
+
+	// _TODO Add condition
+	if (true)
+	{
+		m_textureUpscaled.Resize(width * 2, height * 2);
+	}
 
 	// Perform an initial frame buffer read and update the texture.
 	//readFrameBuffer();

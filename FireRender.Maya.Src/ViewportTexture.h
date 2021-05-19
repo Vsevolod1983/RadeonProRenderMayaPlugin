@@ -6,7 +6,7 @@
 class ViewportTexture
 {
 public:
-	ViewportTexture() {}
+	ViewportTexture();
 	~ViewportTexture();
 
 	// only from main thread
