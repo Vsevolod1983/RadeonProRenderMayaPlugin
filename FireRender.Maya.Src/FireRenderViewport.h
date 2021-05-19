@@ -138,7 +138,7 @@ private:
 	bool m_useAnimationCache;
 
 	/** Cached frame buffer textures to use for animation playback. */
-	FireMaya::TextureCache m_textureCache;
+	FireMaya::TextureCache m_renderedFramesCache;
 
 	/** True if pixels have been updated. */
 	bool m_pixelsUpdated;
