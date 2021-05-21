@@ -42,6 +42,7 @@ limitations under the License.
 // Forward declarations.
 class FireRenderViewport;
 class ImageFilter;
+//class FireRenderContext;
 struct RV_PIXEL;
 
 
@@ -987,6 +988,23 @@ public:
 
 	friend class Lock;
 };
+
+class ContextSetDirtyObjectAutoLocker
+{
+public:
+	ContextSetDirtyObjectAutoLocker(FireRenderContext& context) :
+		m_context(context)
+	{
+		m_context.disableSetDirtyObjects(true);
+	}
+	~ContextSetDirtyObjectAutoLocker()
+	{
+		m_context.disableSetDirtyObjects(false);
+	}
+private:
+	FireRenderContext& m_context;
+};
+
 
 typedef std::shared_ptr<FireRenderContext> FireRenderContextPtr;
 
