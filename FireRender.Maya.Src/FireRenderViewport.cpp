@@ -340,11 +340,16 @@ bool FireRenderViewport::RunOnViewportThread()
 		{
 			if (IsDenoiserUpscalerEnabled() && !m_showUpscaledFrame)
 			{
-				m_showUpscaledFrame = true;
+				{
+					AutoMutexLock contextLock(m_contextLock);
+					AutoMutexLock pixelsLock(m_pixelsLock);
 
-				readFrameBuffer(nullptr, true);
+					m_showUpscaledFrame = true;
 
-				m_pCurrentTexture = &m_textureUpscaled;
+					readFrameBuffer(nullptr, true);
+
+					m_pCurrentTexture = &m_textureUpscaled;
+				}
 
 				ScheduleViewportUpdate();
 			}
@@ -698,10 +703,6 @@ void FireRenderViewport::resizeFrameBufferStandard(unsigned int width, unsigned 
 	{
 		m_textureUpscaled.Release();
 	}
-
-	// Perform an initial frame buffer read and update the texture.
-	//readFrameBuffer();
-	//updateTexture(m_pixels.data(), width, height);
 }
 
 // -----------------------------------------------------------------------------
