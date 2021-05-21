@@ -42,7 +42,6 @@ limitations under the License.
 // Forward declarations.
 class FireRenderViewport;
 class ImageFilter;
-//class FireRenderContext;
 struct RV_PIXEL;
 
 
