@@ -49,7 +49,7 @@ limitations under the License.
 #include <ostream>
 #include <sstream>
 
-#if defined(MAYA2019) || defined(MAYA2020)
+#if defined(MAYA2019) || defined(MAYA2020) || defined(MAYA2022)
 	#include <Xgen/src/xgsculptcore/api/XgSplineAPI.h>
 #else
 	#include <XGen/XgSplineAPI.h>
