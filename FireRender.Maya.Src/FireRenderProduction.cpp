@@ -12,7 +12,6 @@ limitations under the License.
 ********************************************************************/
 #include "FireRenderProduction.h"
 #include "Context/TahoeContext.h"
-#include <tbb/atomic.h>
 #include <maya/MRenderView.h>
 #include <maya/MViewport2Renderer.h>
 #include <maya/MGlobal.h>
