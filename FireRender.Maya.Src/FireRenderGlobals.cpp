@@ -980,7 +980,7 @@ void FireRenderGlobals::createDenoiserAttributes()
 	nAttr.setReadable(false);
 	CHECK_MSTATUS(addAttribute(Attribute::enable16bitCompute));
 
-	Attribute::viewportDenoiseUpscaleEnabled = nAttr.create("viewportDenoiseUpscaleEnabled", "vdue", MFnNumericData::kBoolean, false, &status);
+	Attribute::viewportDenoiseUpscaleEnabled = nAttr.create("viewportDenoiseUpscaleEnabled", "vdue", MFnNumericData::kBoolean, true, &status);
 	MAKE_INPUT(nAttr);
 	nAttr.setConnectable(false);
 	CHECK_MSTATUS(addAttribute(Attribute::viewportDenoiseUpscaleEnabled));
