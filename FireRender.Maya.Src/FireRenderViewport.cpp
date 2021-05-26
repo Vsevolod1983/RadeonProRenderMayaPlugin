@@ -866,15 +866,6 @@ void FireRenderViewport::readFrameBuffer(FireMaya::StoredFrame* storedFrame, boo
 ViewportTexture* FireRenderViewport::getTexture() const
 {
 	return m_pCurrentTexture;
-
-/*	if (!m_showUpscaledFrame)
-	{
-		return m_texture;
-	}
-	else
-	{
-		return m_textureUpscaled;
-	}*/
 }
 
 // -----------------------------------------------------------------------------

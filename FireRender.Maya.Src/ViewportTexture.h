@@ -28,4 +28,3 @@ private:
 	MHWRender::MTexture* m_texture;
 	std::vector<float> m_pixels;
 };
-
