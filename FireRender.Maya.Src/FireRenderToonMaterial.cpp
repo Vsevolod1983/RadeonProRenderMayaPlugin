@@ -148,6 +148,8 @@ frw::Shader FireMaya::ToonMaterial::GetShader(Scope& scope)
 	bool advancedMode = shaderNode.findPlug(Attribute::showAdvanced, false).asBool();
 	bool mixLevels = shaderNode.findPlug(Attribute::showMixLevels, false).asBool();
 
+	shader.SetValue(RPR_MATERIAL_INPUT_COLOR, scope.GetValue(shaderNode.findPlug(Attribute::color, false)));
+
 	if (advancedMode)
 	{
 		shader.SetValue(RPR_MATERIAL_INPUT_COLOR, frw::Value(1.0, 1.0, 1.0, 1.0));
@@ -173,10 +175,6 @@ frw::Shader FireMaya::ToonMaterial::GetShader(Scope& scope)
 		}
 
 		shader.SetValue(RPR_MATERIAL_INPUT_DIFFUSE_RAMP, toonRamp);
-	}
-	else
-	{
-		shader.SetValue(RPR_MATERIAL_INPUT_COLOR, scope.GetValue(shaderNode.findPlug(Attribute::color, false)));
 	}
 
 	shader.SetValue(RPR_MATERIAL_INPUT_ROUGHNESS, scope.GetValue(shaderNode.findPlug(Attribute::roughness, false)));
