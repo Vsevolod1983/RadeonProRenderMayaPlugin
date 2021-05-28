@@ -152,8 +152,6 @@ frw::Shader FireMaya::ToonMaterial::GetShader(Scope& scope)
 
 	if (advancedMode)
 	{
-		shader.SetValue(RPR_MATERIAL_INPUT_COLOR, frw::Value(1.0, 1.0, 1.0, 1.0));
-
 		frw::ToonRampNode toonRamp(scope.MaterialSystem());
 
 		toonRamp.SetValue(RPR_MATERIAL_INPUT_HIGHLIGHT, scope.GetValue(shaderNode.findPlug(Attribute::highlightColor, false)));
