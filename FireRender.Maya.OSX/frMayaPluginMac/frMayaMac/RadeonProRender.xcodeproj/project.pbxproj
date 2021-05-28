@@ -317,7 +317,6 @@
 		505C0CF72660C2BA000E11A9 /* libRprLoadStore64.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1135881F45D6B300E58A52 /* libRprLoadStore64.dylib */; };
 		505C0CF82660C2BA000E11A9 /* libOpenImageIO.1.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190C802452F6D70071D47F /* libOpenImageIO.1.6.dylib */; };
 		505C0CF92660C2BA000E11A9 /* libblosc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190BBE2448AD3C0071D47F /* libblosc.a */; };
-		505C0CFA2660C2BA000E11A9 /* libAdskXGen.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190C172448C71C0071D47F /* libAdskXGen.dylib */; };
 		505C0CFB2660C2BA000E11A9 /* libopenvdb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190BBF2448AD3C0071D47F /* libopenvdb.a */; };
 		505C0CFC2660C2BA000E11A9 /* libz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190BC22448AD3C0071D47F /* libz.a */; };
 		505C0CFD2660C2BA000E11A9 /* libRadeonProRender64.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA69E321D58D8AD00E218C8 /* libRadeonProRender64.dylib */; };
@@ -326,13 +325,14 @@
 		505C0D002660C2BA000E11A9 /* libsnappy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190BC12448AD3C0071D47F /* libsnappy.a */; };
 		505C0D012660C2BA000E11A9 /* libTahoe64.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FA69E331D58D8AD00E218C8 /* libTahoe64.dylib */; };
 		505C0D022660C2BA000E11A9 /* libboost_iostreams.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7190BC02448AD3C0071D47F /* libboost_iostreams.a */; };
-		505C0D0B2660F09F000E11A9 /* Maya2022.bundle in Copy Files (copy product to plug-ins) */ = {isa = PBXBuildFile; fileRef = 505C0D092660C2BA000E11A9 /* Maya2022.bundle */; };
+		505C0D0B2660F09F000E11A9 /* RadeonProRender.bundle in Copy Files (copy product to plug-ins) */ = {isa = PBXBuildFile; fileRef = 505C0D092660C2BA000E11A9 /* RadeonProRender.bundle */; };
 		505C0D1726611618000E11A9 /* ViewportTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 505C0D1426611618000E11A9 /* ViewportTexture.h */; };
 		505C0D1826611618000E11A9 /* ViewportTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 505C0D1426611618000E11A9 /* ViewportTexture.h */; };
 		505C0D1926611618000E11A9 /* ViewportTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 505C0D1426611618000E11A9 /* ViewportTexture.h */; };
 		505C0D1A26611618000E11A9 /* ViewportTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 505C0D1626611618000E11A9 /* ViewportTexture.cpp */; };
 		505C0D1B26611618000E11A9 /* ViewportTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 505C0D1626611618000E11A9 /* ViewportTexture.cpp */; };
 		505C0D1C26611618000E11A9 /* ViewportTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 505C0D1626611618000E11A9 /* ViewportTexture.cpp */; };
+		505C0D2C26617069000E11A9 /* libAdskXGen.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D8613BF21EE273F009DF99F /* libAdskXGen.dylib */; };
 		50C1EDBD247EC23700E53230 /* SetRangeConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C1EDB9247EC23700E53230 /* SetRangeConverter.h */; };
 		50C1EDBE247EC23700E53230 /* SetRangeConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 50C1EDB9247EC23700E53230 /* SetRangeConverter.h */; };
 		50C1EDC0247EC23700E53230 /* SetRangeConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 50C1EDBB247EC23700E53230 /* SetRangeConverter.cpp */; };
@@ -962,7 +962,7 @@
 			dstPath = "/Users/Shared/RadeonProRender/plug-ins/2022";
 			dstSubfolderSpec = 0;
 			files = (
-				505C0D0B2660F09F000E11A9 /* Maya2022.bundle in Copy Files (copy product to plug-ins) */,
+				505C0D0B2660F09F000E11A9 /* RadeonProRender.bundle in Copy Files (copy product to plug-ins) */,
 			);
 			name = "Copy Files (copy product to plug-ins)";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1054,7 +1054,7 @@
 		505C0BB1262F1853000E11A9 /* libRadeonImageFilters.1.7.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libRadeonImageFilters.1.7.0.dylib; path = ../../../RadeonProImageProcessingSDK/OSX/Dynamic/libRadeonImageFilters.1.7.0.dylib; sourceTree = "<group>"; };
 		505C0BB6263BEF90000E11A9 /* FireRenderToonMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FireRenderToonMaterial.cpp; path = ../../../FireRender.Maya.Src/FireRenderToonMaterial.cpp; sourceTree = "<group>"; };
 		505C0BB8263BEF90000E11A9 /* FireRenderToonMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FireRenderToonMaterial.h; path = ../../../FireRender.Maya.Src/FireRenderToonMaterial.h; sourceTree = "<group>"; };
-		505C0D092660C2BA000E11A9 /* Maya2022.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = Maya2022.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		505C0D092660C2BA000E11A9 /* RadeonProRender.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = RadeonProRender.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		505C0D1426611618000E11A9 /* ViewportTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewportTexture.h; path = ../../../FireRender.Maya.Src/ViewportTexture.h; sourceTree = "<group>"; };
 		505C0D1626611618000E11A9 /* ViewportTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewportTexture.cpp; path = ../../../FireRender.Maya.Src/ViewportTexture.cpp; sourceTree = "<group>"; };
 		50C1EDB9247EC23700E53230 /* SetRangeConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetRangeConverter.h; path = ../../../FireRender.Maya.Src/MayaStandardNodesSupport/SetRangeConverter.h; sourceTree = "<group>"; };
@@ -1119,7 +1119,7 @@
 		8D77AEDB1F436244008E88FB /* RenderStamp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderStamp.cpp; path = ../../../FireRender.Maya.Src/RenderStamp.cpp; sourceTree = "<group>"; };
 		8D77AEDC1F436244008E88FB /* RenderStamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderStamp.h; path = ../../../FireRender.Maya.Src/RenderStamp.h; sourceTree = "<group>"; };
 		8D77AEDD1F436244008E88FB /* RenderStampFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderStampFont.h; path = ../../../FireRender.Maya.Src/RenderStampFont.h; sourceTree = "<group>"; };
-		8D8613BF21EE273F009DF99F /* libAdskXGen.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAdskXGen.dylib; path = "../../../../../../../../../Applications/Autodesk/maya2018/plug-ins/xgen/lib/libAdskXGen.dylib"; sourceTree = "<group>"; };
+		8D8613BF21EE273F009DF99F /* libAdskXGen.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libAdskXGen.dylib; path = "../../../../../../Applications/Autodesk/maya2022/plug-ins/xgen/lib/libAdskXGen.dylib"; sourceTree = "<group>"; };
 		8D8CA4B320BC721300A90237 /* PhysicalLightData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicalLightData.cpp; path = ../../../FireRender.Maya.Src/Lights/PhysicalLight/PhysicalLightData.cpp; sourceTree = "<group>"; };
 		8D8CA4B420BC721300A90237 /* PhysicalLightData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhysicalLightData.h; path = ../../../FireRender.Maya.Src/Lights/PhysicalLight/PhysicalLightData.h; sourceTree = "<group>"; };
 		8D8F06E61F437B2D00A13D6B /* ArHosekSkyModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ArHosekSkyModel.cpp; path = ../../../FireRender.Maya.Src/Hosek/ArHosekSkyModel.cpp; sourceTree = "<group>"; };
@@ -1382,7 +1382,6 @@
 				505C0CF72660C2BA000E11A9 /* libRprLoadStore64.dylib in Frameworks */,
 				505C0CF82660C2BA000E11A9 /* libOpenImageIO.1.6.dylib in Frameworks */,
 				505C0CF92660C2BA000E11A9 /* libblosc.a in Frameworks */,
-				505C0CFA2660C2BA000E11A9 /* libAdskXGen.dylib in Frameworks */,
 				505C0CFB2660C2BA000E11A9 /* libopenvdb.a in Frameworks */,
 				505C0CFC2660C2BA000E11A9 /* libz.a in Frameworks */,
 				505C0CFD2660C2BA000E11A9 /* libRadeonProRender64.dylib in Frameworks */,
@@ -1391,6 +1390,7 @@
 				505C0D002660C2BA000E11A9 /* libsnappy.a in Frameworks */,
 				505C0D012660C2BA000E11A9 /* libTahoe64.dylib in Frameworks */,
 				505C0D022660C2BA000E11A9 /* libboost_iostreams.a in Frameworks */,
+				505C0D2C26617069000E11A9 /* libAdskXGen.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1706,7 +1706,7 @@
 				4D6C22041DEBFAF500D745F8 /* RadeonProRender.bundle */,
 				8DBCC36922304666003EE361 /* RadeonProRender.bundle */,
 				B75320EE23D9ED5600246738 /* RadeonProRender.bundle */,
-				505C0D092660C2BA000E11A9 /* Maya2022.bundle */,
+				505C0D092660C2BA000E11A9 /* RadeonProRender.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2381,7 +2381,7 @@
 			);
 			name = Maya2022;
 			productName = helloWorldCmdPlugin;
-			productReference = 505C0D092660C2BA000E11A9 /* Maya2022.bundle */;
+			productReference = 505C0D092660C2BA000E11A9 /* RadeonProRender.bundle */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		8DBCC29B22304666003EE361 /* Maya2019 */ = {
@@ -2974,8 +2974,8 @@
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2022;
 				OTHER_LDFLAGS = (
 					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
-					"-Wl,-exported_symbol,__Z16initializePluginN8Autodesk4Maya16OpenMaya202000007MObjectE",
-					"-Wl,-exported_symbol,__Z18uninitializePluginN8Autodesk4Maya16OpenMaya202000007MObjectE",
+					"-Wl,-exported_symbol,__Z16initializePluginN8Autodesk4Maya16OpenMaya202200007MObjectE",
+					"-Wl,-exported_symbol,__Z18uninitializePluginN8Autodesk4Maya16OpenMaya202200007MObjectE",
 					"-Wl,-exported_symbol,_MApiVersion",
 					"-lOpenMaya",
 					"-lOpenMayaAnim",
@@ -2990,7 +2990,7 @@
 					"-headerpad_max_install_names",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RadeonProRender;
 				ZERO_LINK = YES;
 				_DEBUG = 1;
 			};
@@ -3030,10 +3030,11 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2022;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
-					"-Wl,-exported_symbol,__Z16initializePluginN8Autodesk4Maya16OpenMaya202000007MObjectE",
-					"-Wl,-exported_symbol,__Z18uninitializePluginN8Autodesk4Maya16OpenMaya202000007MObjectE",
+					"-Wl,-exported_symbol,__Z16initializePluginN8Autodesk4Maya16OpenMaya202200007MObjectE",
+					"-Wl,-exported_symbol,__Z18uninitializePluginN8Autodesk4Maya16OpenMaya202200007MObjectE",
 					"-Wl,-exported_symbol,_MApiVersion",
 					"-lOpenMaya",
 					"-lOpenMayaAnim",
@@ -3048,7 +3049,7 @@
 					"-headerpad_max_install_names",
 				);
 				PREBINDING = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RadeonProRender;
 				ZERO_LINK = NO;
 				_DEBUG = 1;
 			};
@@ -3256,6 +3257,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2019;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
 					"-Wl,-exported_symbol,__Z16initializePluginN8Autodesk4Maya16OpenMaya201900007MObjectE",
@@ -3373,6 +3375,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2020;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
 					"-Wl,-exported_symbol,__Z16initializePluginN8Autodesk4Maya16OpenMaya202000007MObjectE",
