@@ -49,6 +49,7 @@ limitations under the License.
 
 #if defined(__APPLE__)
 #include "athenaSystemInfo_Mac.h"
+#include <sys/sysctl.h>
 #endif  // defined(__APPLE__)
 
 using namespace std;
