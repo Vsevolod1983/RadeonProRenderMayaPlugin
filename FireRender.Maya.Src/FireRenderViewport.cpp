@@ -25,7 +25,6 @@ limitations under the License.
 #include <maya/MFileIO.h>
 #include <maya/MGlobal.h>
 #include <maya/MRenderView.h>
-#include <maya/MAtomic.h>
 #include <maya/MAnimControl.h>
 #include <maya/MTextureManager.h>
 #include "AutoLock.h"
