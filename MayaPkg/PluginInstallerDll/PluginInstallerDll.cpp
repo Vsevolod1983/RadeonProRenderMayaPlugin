@@ -129,11 +129,7 @@ void installBoto3()
 
 		SetCurrentDirectoryA(fullPath.c_str());
 
-		std::string cmdScript =
-			"curl \"https://bootstrap.pypa.io/2.7/get-pip.py\" -o \"get-pip.py\" && "
-			"mayapy get-pip.py &&"
-			"mayapy -m pip install boto3\n"
-			;
+		std::string cmdScript = "mayapy -m pip install boto3\n";
 
 		try
 		{
