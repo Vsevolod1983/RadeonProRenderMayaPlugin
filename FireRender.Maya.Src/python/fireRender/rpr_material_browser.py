@@ -73,29 +73,34 @@ class RPRMaterialBrowser(object) :
         # Read the path from the registry if running in Windows.
         if platform == "win32":
 
-            import _winreg
+            import sys
+
+            if sys.version_info[0] < 3:
+                import _winreg as winreg
+            else:
+                import winreg
 
             # Open the key.
             try:
-                key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, "SOFTWARE\\AMD\\RadeonProRender\\MaterialLibrary\\Maya")
+                key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, "SOFTWARE\\AMD\\RadeonProRender\\MaterialLibrary\\Maya")
 
                 # Read the value.
-                result = _winreg.QueryValueEx(key, "MaterialLibraryPath")
+                result = winreg.QueryValueEx(key, "MaterialLibraryPath")
 
                 # Close the key.
-                _winreg.CloseKey(key)
+                winreg.CloseKey(key)
 
                 # Return value from the resulting tuple.
                 return result[0]
 
             except Exception:
                 try:
-                    key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, "SOFTWARE\\AMD\\RadeonProRender\\Maya")
+                    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "SOFTWARE\\AMD\\RadeonProRender\\Maya")
 
                     # Read the value.
-                    result = _winreg.QueryValueEx(key, "MaterialLibraryPath")
+                    result = winreg.QueryValueEx(key, "MaterialLibraryPath")
                     # Close the key.
-                    _winreg.CloseKey(key)
+                    winreg.CloseKey(key)
                     # Return value from the resulting tuple.		
                     return result[0]
 
