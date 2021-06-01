@@ -113,9 +113,8 @@ void installBoto3()
 {
 	LogSystem("installBoto3\n");
 
+	// We install boto3 only on Maya versions with Python 3 inside
 	const static std::vector<std::string> versions = {
-		{"2019"},
-		{"2020"},
 		{"2022"}
 	};
 
