@@ -625,8 +625,6 @@ MStatus initializePlugin(MObject obj)
 
 	glewInit();
 
-	MGlobal::displayWarning("RPR Step 0.1");
-
 	StartupContextChecker::CheckContexts();
 	if (!StartupContextChecker::IsRprSupported())
 	{
@@ -638,18 +636,13 @@ MStatus initializePlugin(MObject obj)
 		MGlobal::displayWarning("Machine learning denoiser is not supported by current CPU");
 	}
 
-	MGlobal::displayWarning("RPR Step 0.2");
 	CHECK_MSTATUS(plugin.registerNode("RadeonProRenderGlobals", FireRenderGlobals::FRTypeID(),
 		FireRenderGlobals::creator,
 		FireRenderGlobals::initialize,
 		MPxNode::kDependNode));
 
-	MGlobal::displayWarning("RPR Step 0.3");
-
 	MString setCachePathString = "import fireRender.fireRenderUtils as fru\nfru.setShaderCachePathEnvironment(\"" + pluginVersion + "\")";
 	MGlobal::executePythonCommand(setCachePathString);
-
-	MGlobal::displayWarning("RPR Step 0.35");
 
 	MString iblClassification = FireRenderIBL::drawDbClassification;
 	MString skyClassification = FireRenderSkyLocator::drawDbClassification;
@@ -658,8 +651,6 @@ MStatus initializePlugin(MObject obj)
 	MString envLightClassification = FireRenderEnvironmentLight::drawDbClassification;
 	MString volumeClassification = FireRenderVolumeLocator::drawDbClassification;
 	
-	MGlobal::displayWarning("RPR Step 0.4");
-
 	static const MString swatchName("swatchFireRenderMaterial");
 	if (MGlobal::mayaState() != MGlobal::kBatch)
 	{
@@ -750,9 +741,7 @@ MStatus initializePlugin(MObject obj)
 		FireRenderRenderPass::creator, FireRenderRenderPass::initialize,
 		MPxNode::kDependNode, &renderPassClassification));
 
-	MGlobal::displayWarning("RPR Step 0.5");
 	checkFireRenderGlobals(NULL);
-	MGlobal::displayWarning("RPR Step 0.7");
 
 	beforeNewSceneCallback = MSceneMessage::addCallback(MSceneMessage::kBeforeNew, swapToDefaultRenderOverride, NULL, &status);
 	CHECK_MSTATUS(status);
@@ -767,24 +756,16 @@ MStatus initializePlugin(MObject obj)
 	openSceneCallback = MSceneMessage::addCallback(MSceneMessage::kAfterOpen, checkFireRenderGlobals, NULL, &status);
 	CHECK_MSTATUS(status);
 
-	MGlobal::displayWarning("RPR Step 1");
-
 	auto mlDenoiserSupportedCPU = static_cast<int>(StartupContextChecker::IsMLDenoiserSupportedCPU());
 	MString mlSupportCPU = MString(std::to_string(mlDenoiserSupportedCPU).c_str());
 
 	MString registerCmd = MString("registerFireRender(" + mlSupportCPU + ")");
 	MGlobal::executeCommand(registerCmd);
 
-	MGlobal::displayWarning("RPR Step 2");
-
 	MGlobal::executeCommand("setupFireRenderNodeClassification()");
-
-	MGlobal::displayWarning("RPR Step 3");
 
 	AddExtensionAttributesCommon();
 	MGlobal::executeCommand("setupFireRenderExtraUI()");
-
-	MGlobal::displayWarning("RPR Step 4");
 
 	// GLTF
 	MGlobal::executeCommand("rprExportsGLTF(1)");
