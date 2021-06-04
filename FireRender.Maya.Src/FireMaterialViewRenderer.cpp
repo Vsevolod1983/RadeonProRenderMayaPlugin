@@ -121,7 +121,6 @@ MStatus FireMaterialViewRenderer::startAsync(const JobParams& params)
 MStatus FireMaterialViewRenderer::stopAsync()
 {
 	m_threadCmd = ThreadCommand::STOP_THREAD;
-	//MAtomic::set(&m_threadCmd, ThreadCommand::STOP_THREAD);
 
 	RPR::AutoMutexLock lock(m_renderData.m_mutex);
 
@@ -144,7 +143,6 @@ MStatus FireMaterialViewRenderer::beginSceneUpdate()
 	}
 
 	m_threadCmd = ThreadCommand::BEGIN_UPDATE;
-	//MAtomic::set(&m_threadCmd, ThreadCommand::BEGIN_UPDATE);
 	m_renderData.m_mutex.lock();
 	return MS::kSuccess;
 }
@@ -539,7 +537,6 @@ MStatus FireMaterialViewRenderer::endSceneUpdate()
 		checkStatus(frstatus);
 
 		m_numIteration = 1;
-		//MAtomic::set(&m_threadCmd, ThreadCommand::RENDER_IMAGE);
 		m_threadCmd = ThreadCommand::RENDER_IMAGE;
 
 		m_renderData.m_mutex.unlock();
@@ -583,8 +580,6 @@ void FireMaterialViewRenderer::render()
 		//Prevents view freezing after selecting invalid material and then selecting valid
 		auto& nodeId = std::get<FireMaya::NodeId>(m_renderData.m_surfaceShader);
 		m_renderData.m_context.GetScope().SetCachedShader(nodeId, nullptr);
-
-		//MAtomic::set(&m_threadCmd, ThreadCommand::BEGIN_UPDATE);
 
 		m_threadCmd = ThreadCommand::BEGIN_UPDATE;
 		return;
@@ -639,7 +634,6 @@ void FireMaterialViewRenderer::render()
 		params.progress = 1.0;
 		progress(params);
 
-		//MAtomic::set(&m_threadCmd, ThreadCommand::BEGIN_UPDATE);
 		m_threadCmd = ThreadCommand::BEGIN_UPDATE;
 	}
 }
