@@ -1067,6 +1067,8 @@ void FireRenderProduction::RenderTiles()
 
 void FireRenderProduction::RenderFullFrame()
 {
+	LogPrint("RenderFullFrame called");
+
 	m_contextPtr->render(false);
 
 	m_contextPtr->updateProgress();

@@ -150,6 +150,8 @@ void FireRenderGlobalsData::readFromCurrentScene()
 		if (!plug.isNull())
 			completionCriteriaFinalRender.completionCriteriaType = plug.asShort();*/
 
+		MGlobal::displayWarning("READ COMPLETION CRITERIA");
+
 		MPlug plug = frGlobalsNode.findPlug("completionCriteriaHours");
 		if (!plug.isNull())
 			completionCriteriaFinalRender.completionCriteriaHours = plug.asInt();
@@ -170,6 +172,17 @@ void FireRenderGlobalsData::readFromCurrentScene()
 		if (!plug.isNull())
 			completionCriteriaFinalRender.completionCriteriaMinIterations = plug.asInt();
 
+		MString hours, minutes, seconds, max, min;
+
+		hours.set(completionCriteriaFinalRender.completionCriteriaHours);
+		minutes.set(completionCriteriaFinalRender.completionCriteriaMinutes);
+		seconds.set(completionCriteriaFinalRender.completionCriteriaSeconds);
+		max.set(completionCriteriaFinalRender.completionCriteriaMaxIterations);
+		min.set(completionCriteriaFinalRender.completionCriteriaMinIterations);
+
+		MString output;
+		output.format("Hours ^1s, minutes ^2s, seconds ^3s, Max Iteration: ^4s, Min iterations(For adaptive) ^5s", hours, minutes, seconds, max, min);
+		MGlobal::displayWarning(output);
 
 		/*plug = frGlobalsNode.findPlug("completionCriteriaTypeViewport");
 		if (!plug.isNull())

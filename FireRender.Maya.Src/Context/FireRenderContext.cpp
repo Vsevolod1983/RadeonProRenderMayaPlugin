@@ -1026,6 +1026,8 @@ void FireRenderContext::render(bool lock)
 
 	auto context = scope.Context();
 
+	LogPrint("FireRenderContext::render called");
+
 	if (!context)
 		return;
 
@@ -1071,9 +1073,14 @@ void FireRenderContext::render(bool lock)
 	// may need to change iteration step
 	int iterationStep = m_samplesPerUpdate;
 
+	LogPrint("render: iterationStep = %d", iterationStep);
+
 	if (!m_completionCriteriaParams.isUnlimitedIterations())
 	{
 		int remainingIterations = m_completionCriteriaParams.completionCriteriaMaxIterations - m_currentIteration;
+
+		LogPrint("render: remainingIterations = %d", remainingIterations);
+
 		if (remainingIterations < iterationStep)
 		{
 			iterationStep = remainingIterations;
@@ -1106,6 +1113,8 @@ void FireRenderContext::render(bool lock)
 		}
 	}
 
+	LogPrint("render: m_currentIteration = %d", m_currentIteration);
+
 	if (m_currentIteration == 0)
 	{
 		m_lastRenderStartTime = std::chrono::system_clock::now();
@@ -1114,6 +1123,8 @@ void FireRenderContext::render(bool lock)
 	}
 
 	m_currentIteration += iterationStep;
+
+	LogPrint("render: m_currentIteration after increment = %d", m_currentIteration);
 	m_currentFrame++;
 
 	m_cameraAttributeChanged = false;
@@ -2784,10 +2795,18 @@ void FireRenderContext::setStartedRendering()
 
 bool FireRenderContext::keepRenderRunning()
 {
+	LogPrint("keepRenderRunning called");
+
+
+//	BGlobal::displayWarning("current iteration: ");
 	// Check if adaptive sampling finished it's work.
 	// At zero iterarion there's no render info for active pixel count.
+
+	LogPrint("keepRenderRunning: currIter = %d, maxIters = %d", m_currentIteration, m_completionCriteriaParams.completionCriteriaMaxIterations);
+
 	if (m_currentIteration != 0 && GetScope().Context().IsAdaptiveSamplingFinalized())
 	{
+		LogPrint("keepRenderRunning returns false: 1");
 		return false;
 	}
 
@@ -2795,11 +2814,13 @@ bool FireRenderContext::keepRenderRunning()
 	if (!m_completionCriteriaParams.isUnlimitedIterations() &&
 		m_currentIteration >= m_completionCriteriaParams.completionCriteriaMaxIterations)
 	{
+		LogPrint("keepRenderRunning returns false: 2");
 		return false;
 	}
 
 	if (m_completionCriteriaParams.isUnlimitedTime())
 	{
+		LogPrint("keepRenderRunning returns true: 3");
 		return true;
 	}
 
