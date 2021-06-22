@@ -49,6 +49,9 @@ FireRenderRenderData::FireRenderRenderData() :
 
 	auto createFlags = FireMaya::Options::GetContextDeviceFlags(RenderType::ViewportRender);
 
+	// force using NorthStar for swatches
+	m_context.SetPluginEngine(TahoePluginVersion::RPR2);
+
 	rpr_int res;
 	if (!m_context.createContextEtc(createFlags, true, false, &res))
 	{
