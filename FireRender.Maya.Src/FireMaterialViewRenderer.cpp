@@ -47,8 +47,10 @@ FireRenderRenderData::FireRenderRenderData() :
 
 	auto createFlags = FireMaya::Options::GetContextDeviceFlags(RenderType::ViewportRender);
 
-	// force using NorthStar for swatches
+#ifdef _WIN32
+	// force using NorthStar for material viewer on Windows
 	m_context.SetPluginEngine(TahoePluginVersion::RPR2);
+#endif
 
 	rpr_int res;
 	if (!m_context.createContextEtc(createFlags, true, false, &res))
@@ -56,6 +58,12 @@ FireRenderRenderData::FireRenderRenderData() :
 		MString msg;
 		FireRenderError errorToShow(res, msg, true);
 	}
+
+// MacOS only for now for tahoe resolve
+#ifndef _WIN32
+	m_context.normalization = frw::PostEffect(m_context.GetContext(), frw::PostEffectTypeNormalization);
+	m_context.GetContext().Attach(m_context.normalization);
+#endif
 }
 
 FireRenderRenderData::~FireRenderRenderData()
