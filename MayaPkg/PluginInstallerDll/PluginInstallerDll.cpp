@@ -172,6 +172,41 @@ void setAutoloadPlugin(const std::wstring &maya_version)
 	}
 }
 
+bool CheckPathForRPRPresence(const std::string& path)
+{
+    std::string fullPath = path + "\\RadeonProRender64.dll";
+    std::ifstream infile(fullPath);
+    return infile.good();
+}
+
+void CheckRPRSDKInTheSystem()
+{
+    std::string folders = std::getenv("PATH");
+
+    size_t startIndex = 0;
+    size_t endIndex = 0;
+
+    while (startIndex < folders.length())
+    {
+        endIndex = folders.find(";", startIndex);
+        if (endIndex == std::string::npos)
+        {
+            endIndex = folders.length() - 1;
+        }
+
+        std::string path = folders.substr(startIndex, endIndex - startIndex);
+
+        if (CheckPathForRPRPresence(path))
+        {
+            std::string message = path + " folder contains another RPR SDK dlls. They might conflict with RPR SDK dlls which are located in maya plugin. It might lead to problems upon plugin load";
+            MessageBoxA(GetForegroundWindow(), message.c_str(), "Warning", MB_OK | MB_TOPMOST | MB_ICONWARNING | MB_APPLMODAL);
+            break;
+        }
+
+        startIndex = endIndex + 1;
+    }
+}
+
 extern "C" __declspec(dllexport) UINT postInstall(MSIHANDLE hInstall) 
 {
 	LogSystem("postInstall\n");
@@ -184,6 +219,8 @@ extern "C" __declspec(dllexport) UINT postInstall(MSIHANDLE hInstall)
 	{
 		setAutoloadPlugin(versions[i]);
 	}
+
+	CheckRPRSDKInTheSystem();
 
 	return ERROR_SUCCESS;
 }
